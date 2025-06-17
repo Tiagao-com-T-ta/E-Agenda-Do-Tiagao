@@ -2,16 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace E_Agenda.Structure.Shared
 {
     public abstract class BaseRepositoryFile<T> where T : BaseEntity<T>
     {
         protected DataContext dataContext;
-        protected List<T> registers = new List<T>();
-
+        protected List<T> registers;
 
         protected BaseRepositoryFile(DataContext dataContext)
         {
@@ -21,39 +18,34 @@ namespace E_Agenda.Structure.Shared
 
         protected abstract List<T> GetRegisters();
 
-        public void CreateRegister(T newRegister)
+        public void Register(T newRegister)
         {
             registers.Add(newRegister);
             dataContext.SaveData();
         }
 
-        public bool EditRegister(Guid registerId, T editedRegister)
+        public bool Edit(Guid registerId, T editedRegister)
         {
-            foreach (T register in registers)
-            {
-                if (register.Id == registerId)
-                {
-                    register.Update(editedRegister);
-                    dataContext.SaveData();
-                    return true;
-                }
-            }
+            var register = GetRegisterById(registerId);
 
-            return false;
+            if (register == null)
+                return false;
+
+            register.Update(editedRegister);
+            dataContext.SaveData();
+            return true;
         }
 
-        public bool DeleteRegister(Guid registerId)
+        public bool Delete(Guid registerId)
         {
-            T registerToDelete = GetRegistersByID(registerId);
+            var register = GetRegisterById(registerId);
 
-            if (registerToDelete != null)
-            {
-                registers.Remove(registerToDelete);
-                dataContext.SaveData();
-                return true;
-            }
+            if (register == null)
+                return false;
 
-            return false;
+            registers.Remove(register);
+            dataContext.SaveData();
+            return true;
         }
 
         public List<T> GetAllRegisters()
@@ -61,17 +53,9 @@ namespace E_Agenda.Structure.Shared
             return registers;
         }
 
-        public T GetRegistersByID(Guid registerId)
+        public T GetRegisterById(Guid registerId)
         {
-            foreach (T register in registers)
-            {
-                if (register.Id == registerId)
-                {
-                    return register;
-                }
-            }
-            return null!;
+            return registers.FirstOrDefault(r => r.Id == registerId)!;
         }
     }
 }
-

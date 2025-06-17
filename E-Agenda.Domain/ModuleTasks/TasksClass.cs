@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskManagement.Domain.TaskModule.Enums;
+using TaskManagement.Domain.TaskModule;
 
 namespace TaskManagement.Domain.TaskModule
 {
-    public class Task : BaseEntity<Task>
+    public class TasksClass : BaseEntity<TasksClass>
     {
         public string Title { get; set; }
         public TaskPriority Priority { get; set; }
@@ -16,7 +16,7 @@ namespace TaskManagement.Domain.TaskModule
         public decimal CompletionPercentage { get; set; }
         public List<TaskItem> Items { get; set; }
 
-        public Task()
+        public TasksClass()
         {
             Items = new List<TaskItem>();
             CreationDate = DateTime.Now;
@@ -24,7 +24,7 @@ namespace TaskManagement.Domain.TaskModule
             CompletionPercentage = 0;
         }
 
-        public Task(string title, TaskPriority priority) : this()
+        public TasksClass(string title, TaskPriority priority) : this()
         {
             Title = title;
             Priority = priority;
@@ -75,7 +75,7 @@ namespace TaskManagement.Domain.TaskModule
             }
         }
 
-        public override void Update(Task editedRegister)
+        public override void Update(TasksClass editedRegister)
         {
             Title = editedRegister.Title;
             Priority = editedRegister.Priority;

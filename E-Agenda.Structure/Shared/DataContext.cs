@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using TaskManagement.Domain.TaskModule;
 
 namespace E_Agenda.Structure.Shared
 {
@@ -15,9 +15,10 @@ namespace E_Agenda.Structure.Shared
 
 
         // as listas vão aqui.
-
+        public List<TasksClass> TasksClass { get; set;  }
         public DataContext()
         {
+            TasksClass = new List<TasksClass>();
         }
 
         public DataContext(bool loadData) : this()
@@ -66,6 +67,7 @@ namespace E_Agenda.Structure.Shared
             if (dataContext == null) return;
 
             // Carregar as listas aqui.
+            TasksClass = dataContext.TasksClass;
         }
     }
 }
