@@ -32,8 +32,6 @@ namespace E_Agenda.Domain.ContactModule
             Role = role;
             Company = company;
 
-
-
         }
 
         public override void Update(Contact editedRegister)
