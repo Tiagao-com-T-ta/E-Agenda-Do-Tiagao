@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <ProjectReference Include="..\E-Agenda.Domain\E-Agenda.Domain.csproj" />
+    <ProjectReference Include="..\E-Agenda.Structure\E-Agenda.Structure.csproj" />
   </ItemGroup>
 
 </Project>
