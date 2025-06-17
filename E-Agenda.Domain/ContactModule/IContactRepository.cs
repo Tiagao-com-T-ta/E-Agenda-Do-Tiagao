@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace E_Agenda.Domain.ContactModule
 {
-    public interface IRepositoryContact : IRepository<Contact>;
+    public interface IContactRepository : IRepository<Contact>;
     
 }

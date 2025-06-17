@@ -1,4 +1,5 @@
-﻿using System;
+﻿using E_Agenda.Domain.ContactModule;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,11 @@ namespace E_Agenda.Structure.Shared
 
 
         // as listas vão aqui.
+        public List<Contact> Contacts { get; set; }
 
         public DataContext()
         {
+            Contacts = new List<Contact>();
         }
 
         public DataContext(bool loadData) : this()
@@ -66,6 +69,7 @@ namespace E_Agenda.Structure.Shared
             if (dataContext == null) return;
 
             // Carregar as listas aqui.
+            Contacts = dataContext.Contacts;
         }
     }
 }
