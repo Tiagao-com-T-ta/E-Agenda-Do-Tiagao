@@ -26,6 +26,7 @@ namespace E_Agenda.Domain.ContactModule
             if (company == null)
                 company = "N/A";
 
+            Id = Guid.NewGuid();
             Name = name;
             Email = email;
             Telephone = telephone;
