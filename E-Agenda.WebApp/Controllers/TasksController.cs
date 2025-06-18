@@ -1,151 +1,195 @@
-﻿using E_Agenda.Structure.Shared;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagement.Domain.TaskModule;
 using TaskManagement.Infrastructure.TaskModule;
-using TaskManagement.WebApp.Extensions;
 using TaskManagement.WebApp.ViewModels;
+using TaskManagement.WebApp.Extensions;
+using E_Agenda.Structure.Shared;
 
-namespace TaskManagement.WebApp.Controllers
+namespace TaskManagement.WebApp.Controllers;
+
+[Route("tasks")]
+public class TasksController : Controller
 {
-    [Route("api/tasks")]
-    public class TaskController : ControllerBase
+    private readonly DataContext context;
+    private readonly ITasksRepository tasksRepository;
+
+    public TasksController()
     {
-        private readonly DataContext context;
-        private readonly ITasksRepository tasksRepository;
-
-        public TaskController()
-        {
-            context = new DataContext(loadData: true);
-            tasksRepository = new TasksRepositoryInFile(context);
-        }
-
-        [HttpGet]
-        public IActionResult GetAll([FromQuery] string status)
-        {
-            List<TasksClass> tasks = status switch
-            {
-                "pending" => tasksRepository.GetPendingTasks(),
-                "completed" => tasksRepository.GetCompletedTasks(),
-                _ => tasksRepository.GetAllRegisters()
-            };
-
-            return Ok(new TaskListViewModel(tasks));
-        }
-
-        [HttpGet("{id:guid}")]
-        public IActionResult GetById(Guid id)
-        {
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            return Ok(task.ToDetailsViewModel());
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromBody] TaskFormViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var task = viewModel.ToEntity();
-            tasksRepository.Register(task);
-
-            return CreatedAtAction(nameof(GetById), new { id = task.Id }, task.ToDetailsViewModel());
-        }
-
-        [HttpPut("{id:guid}")]
-        public IActionResult Update(Guid id, [FromBody] TaskFormViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var existingTask = tasksRepository.GetRegisterById(id);
-            if (existingTask == null)
-                return NotFound();
-
-            var updatedTask = viewModel.ToEntity();
-            existingTask.Update(updatedTask);
-
-            tasksRepository.Edit(id, existingTask);
-
-            return Ok(existingTask.ToDetailsViewModel());
-        }
-
-        [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
-        {
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            tasksRepository.Delete(id);
-            return NoContent();
-        }
-
-        [HttpGet("{id:guid}/items")]
-        public IActionResult GetTaskItems(Guid id)
-        {
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            return Ok(task.Items.ConvertAll(i => i.ToViewModel()));
-        }
-
-        [HttpPost("{id:guid}/items")]
-        public IActionResult AddItem(Guid id, [FromBody] AddTaskItemViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            var item = new TaskItem(viewModel.Title);
-            task.AddItem(item);
-
-            tasksRepository.Edit(id, task);
-
-            return Ok(item.ToViewModel());
-        }
-
-        [HttpDelete("{id:guid}/items/{itemId:guid}")]
-        public IActionResult RemoveItem(Guid id, Guid itemId)
-        {
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            var item = task.Items.FirstOrDefault(i => i.Id == itemId);
-            if (item == null)
-                return NotFound();
-
-            task.RemoveItem(item);
-            tasksRepository.Edit(id, task);
-
-            return NoContent();
-        }
-
-        [HttpPost("{id:guid}/items/{itemId:guid}/complete")]
-        public IActionResult CompleteItem(Guid id, Guid itemId)
-        {
-            var task = tasksRepository.GetRegisterById(id);
-            if (task == null)
-                return NotFound();
-
-            task.CompleteItem(itemId);
-            tasksRepository.Edit(id, task);
-
-            return Ok(task.ToDetailsViewModel());
-        }
-
-        [HttpGet("priority/{priority}")]
-        public IActionResult GetByPriority(TaskPriority priority)
-        {
-            var tasks = tasksRepository.GetTasksByPriority(priority);
-            return Ok(new TaskListViewModel(tasks));
-        }
+        context = new DataContext(true);
+        tasksRepository = new TasksRepositoryInFile(context);
     }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var tarefas = tasksRepository.GetAllRegisters();
+        var viewModel = new TaskListViewModel(tarefas);
+
+        return View(viewModel);
+    }
+
+    [HttpGet("cadastrar")]
+    public IActionResult Cadastrar()
+    {
+        var cadastrarVM = new TaskFormViewModel();
+        return View(cadastrarVM);
+    }
+
+    [HttpPost("cadastrar")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Cadastrar(TaskFormViewModel cadastrarVM)
+    {
+        if (!ModelState.IsValid)
+            return View(cadastrarVM);
+
+        var novaTarefa = cadastrarVM.ToEntity();
+
+        tasksRepository.Register(novaTarefa);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("editar/{id:guid}")]
+    public IActionResult Editar(Guid id)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+
+        if (tarefa == null)
+            return NotFound();
+
+        var editarVM = tarefa.ToFormViewModel();
+
+        return View(editarVM);
+    }
+
+    [HttpPost("editar/{id:guid}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Editar(Guid id, TaskFormViewModel editarVM)
+    {
+        if (!ModelState.IsValid)
+            return View(editarVM);
+
+        var tarefaExistente = tasksRepository.GetRegisterById(id);
+        if (tarefaExistente == null)
+            return NotFound();
+
+        var tarefaAtualizada = editarVM.ToEntity();
+        tarefaExistente.Update(tarefaAtualizada);
+
+        tasksRepository.Edit(id, tarefaExistente);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("excluir/{id:guid}")]
+    public IActionResult Excluir(Guid id)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+
+        if (tarefa == null)
+            return NotFound();
+
+        var excluirVM = tarefa.ToDetailsViewModel();
+
+        return View(excluirVM);
+    }
+
+    [HttpPost("excluir/{id:guid}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult ExcluirConfirmado(Guid id)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+
+        if (tarefa == null)
+            return NotFound();
+
+        bool possuiItensPendentes = tarefa.Items.Any(i => !i.IsCompleted);
+
+        if (possuiItensPendentes)
+        {
+            var viewModel = tarefa.ToDetailsViewModel();
+            
+            ViewBag.Erro = "A tarefa não pode ser excluída pois possui itens pendentes.";
+
+            return View("Excluir", viewModel);
+        }
+
+        tasksRepository.Delete(id);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet("detalhes/{id:guid}")]
+    public IActionResult Detalhes(Guid id)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+
+        if (tarefa == null)
+            return NotFound();
+
+        var detalhesVM = tarefa.ToDetailsViewModel();
+
+        return View(detalhesVM);
+    }
+    [HttpGet("{id:guid}/items/adicionar")]
+    public IActionResult AdicionarItem(Guid id)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+        if (tarefa == null)
+            return NotFound();
+
+        var viewModel = new ManageTaskItemsViewModel(tarefa);
+        return View(viewModel);
+    }
+
+    [HttpPost("{id:guid}/items/adicionar")]
+    [ValidateAntiForgeryToken]
+    public IActionResult AdicionarItem(Guid id, AddTaskItemViewModel newItem)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+        if (tarefa == null)
+            return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            var viewModelInvalid = new ManageTaskItemsViewModel(tarefa)
+            {
+                NewItem = newItem
+            };
+            return View(viewModelInvalid);
+        }
+
+        var taskItem = new TaskItem(newItem.Title);
+        tarefa.AddItem(taskItem);
+
+        tasksRepository.Edit(id, tarefa);
+
+        return RedirectToAction("Detalhes", new { id });
+    }
+
+    [HttpPost("{id:guid}/items/concluir")]
+    public IActionResult ConcluirItem(Guid id, Guid itemId)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+        if (tarefa == null)
+            return NotFound();
+
+        var item = tarefa.Items.FirstOrDefault(i => i.Id == itemId);
+        if (item == null)
+            return NotFound();
+
+        if (item.IsCompleted)
+            item.IsCompleted = false;
+        else
+            item.Complete();
+
+        tarefa.GetType()
+            .GetMethod("CalculateCompletionPercentage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.Invoke(tarefa, null);
+
+        tasksRepository.Edit(id, tarefa);
+
+        return RedirectToAction("Detalhes", new { id });
+    }
+
 }

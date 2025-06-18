@@ -1,0 +1,22 @@
+﻿@model TaskManagement.WebApp.ViewModels.ManageTaskItemsViewModel
+
+@{
+    ViewBag.Title = "Adicionar Item à Tarefa";
+}
+
+<h2>Adicionar Item à Tarefa: @Model.Task.Title</h2>
+
+<form asp-action="AdicionarItem" asp-route-id="@Model.Task.Id" method="post">
+    <div class="form-group">
+        <label for="Title">Título do Item</label>
+        <input asp-for="NewItem.Title" class="form-control" />
+        <span asp-validation-for="NewItem.Title" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Adicionar</button>
+    <a href="@Url.Action("Detalhes", "Tasks", new { id = Model.Task.Id })" class="btn btn-secondary mt-3">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

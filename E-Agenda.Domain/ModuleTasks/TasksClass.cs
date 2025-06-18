@@ -18,6 +18,7 @@ namespace TaskManagement.Domain.TaskModule
 
         public TasksClass()
         {
+            Id = Guid.NewGuid();
             Items = new List<TaskItem>();
             CreationDate = DateTime.Now;
             IsCompleted = false;
