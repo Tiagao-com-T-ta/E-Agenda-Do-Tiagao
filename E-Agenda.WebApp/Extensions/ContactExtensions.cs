@@ -8,7 +8,7 @@ namespace E_Agenda.WebApp.Extensions
     {
         public static Contact ToEntity(this ContactFormViewModel form)
         {
-            return new Contact(form.Name, form.Email, form.Telephone, form.Company, form.Role);
+            return new Contact(form.Name, form.Email, form.Telephone, form.Role, form.Company);
         }
 
         public static ContactDetailsViewModel ToDetailsVM(this Contact contact)

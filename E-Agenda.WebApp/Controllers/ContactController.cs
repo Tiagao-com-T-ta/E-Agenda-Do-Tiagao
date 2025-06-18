@@ -152,10 +152,18 @@ namespace E_Agenda.WebApp.Controllers
         }
 
         [HttpPost("delete/{id:guid}")]
+        public IActionResult ConfirmDelete(Guid id)
+        {
+            contactRepository.Delete(id);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("details/{id:guid}")]
         public IActionResult Details(Guid id)
         {
             var selectedRegister = contactRepository.GetRegisterById(id);
-            
+
             var detailsVM = new ContactDetailsViewModel(
                 id,
                 selectedRegister.Name,

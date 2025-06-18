@@ -1,0 +1,58 @@
+﻿@using E_Agenda.WebApp.Models
+
+@model RegisterContactViewModel
+
+@{
+    ViewBag.Title = "Cadastrar Contato";
+    Layout = "_Layout";
+}
+
+<hr />
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card rounded-4 border-0">
+            <div class="card-body p-md-5">
+                <form asp-action="Register">
+                    <h3>Formulário de Cadastro</h3>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Name" class="control-label fs-5">Nome:</label>
+                        <input asp-for="Name" class="form-control" value="@Model.Name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Email" class="control-label fs-5">Email:</label>
+                        <input asp-for="Email" class="form-control" value="@Model.Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Telephone" class="control-label fs-5">Telefone:</label>
+                        <input asp-for="Telephone" class="form-control" value="@Model.Telephone" />
+                        <span asp-validation-for="Telephone" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Role" class="control-label fs-5">Cargo(Opcional):</label>
+                        <input asp-for="Role" class="form-control" value="@Model.Role" />
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Company" class="control-label fs-5">Empresa(Opcional):</label>
+                        <input asp-for="Company" class="form-control" value="@Model.Company" />
+
+                    </div>
+                    <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
+                        <a href="/contacts">Voltar para a listagem</a>
+                        <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

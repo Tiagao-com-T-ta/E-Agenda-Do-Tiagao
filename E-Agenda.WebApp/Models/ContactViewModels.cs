@@ -2,6 +2,7 @@
 using E_Agenda.WebApp.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace E_Agenda.WebApp.Models
 {
@@ -20,8 +21,8 @@ namespace E_Agenda.WebApp.Models
         [RegularExpression(@"^\(?\d{2}\)?[\s-]?\d{4,5}[-]?\d{4}$")]
         public string Telephone { get; set; }
 
-        public string Role { get; set; }
-        public string Company { get; set; }
+        public string? Role { get; set; }
+        public string? Company { get; set; }
     }
 
     public class RegisterContactViewModel : ContactFormViewModel
@@ -32,8 +33,8 @@ namespace E_Agenda.WebApp.Models
             Name = name;
             Email = email;
             Telephone = telephone;
-            Role = role ?? "N/A";
-            Company = company ?? "N/A";
+            Role = role;
+            Company = company;
         }
 
     }
@@ -48,8 +49,8 @@ namespace E_Agenda.WebApp.Models
             Name = name;
             Email = email;
             Telephone = telephone;
-            Role = role ?? "N/A";
-            Company = company ?? "N/A";
+            Role = role;
+            Company = company;
         }
     }
 
@@ -89,7 +90,7 @@ namespace E_Agenda.WebApp.Models
         public string Role { get; set; }
         public string Company { get; set; }
         
-        public ContactDetailsViewModel(Guid id, string name, string email, string telephone, string role, string company)
+        public ContactDetailsViewModel(Guid id, string name, string email, string telephone, string? role, string? company)
         {
             Id = id;
             Name = name;
@@ -104,19 +105,13 @@ namespace E_Agenda.WebApp.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Telephone { get; set; }
-        public string Role { get; set; }
-        public string Company { get; set; }
+        
 
-        public SelectContactViewModel(Guid id, string name, string email, string telephone, string role, string company)
+        public SelectContactViewModel(Guid id, string name)
         {
             Id = id;
             Name = name;
-            Email = email;
-            Telephone = telephone;
-            Role = role;
-            Company = company;
+            
         }
     }
 }
