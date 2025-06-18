@@ -17,9 +17,9 @@
             Title = title;
         }
 
-        public void Complete()
+        public void ToggleCompletion()
         {
-            IsCompleted = true;
+            IsCompleted = !IsCompleted;
         }
     }
 }

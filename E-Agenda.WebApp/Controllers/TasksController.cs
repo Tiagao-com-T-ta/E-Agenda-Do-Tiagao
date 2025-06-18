@@ -167,7 +167,8 @@ public class TasksController : Controller
         return RedirectToAction("Detalhes", new { id });
     }
 
-    [HttpPost("{id:guid}/items/concluir")]
+    [HttpPost("{id:guid}/items/{itemId:guid}/concluir")]
+    [ValidateAntiForgeryToken]
     public IActionResult ConcluirItem(Guid id, Guid itemId)
     {
         var tarefa = tasksRepository.GetRegisterById(id);
@@ -178,14 +179,28 @@ public class TasksController : Controller
         if (item == null)
             return NotFound();
 
-        if (item.IsCompleted)
-            item.IsCompleted = false;
-        else
-            item.Complete();
+        item.ToggleCompletion();
 
-        tarefa.GetType()
-            .GetMethod("CalculateCompletionPercentage", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-            ?.Invoke(tarefa, null);
+        tarefa.UpdateProgress();
+
+        tasksRepository.Edit(id, tarefa);
+
+        return RedirectToAction("Detalhes", new { id });
+    }
+
+    [HttpPost("{id:guid}/items/{itemId:guid}/excluir")]
+    [ValidateAntiForgeryToken]
+    public IActionResult ExcluirItem(Guid id, Guid itemId)
+    {
+        var tarefa = tasksRepository.GetRegisterById(id);
+        if (tarefa == null)
+            return NotFound();
+
+        var item = tarefa.Items.FirstOrDefault(i => i.Id == itemId);
+        if (item == null)
+            return NotFound();
+
+        tarefa.Items.Remove(item);
 
         tasksRepository.Edit(id, tarefa);
 

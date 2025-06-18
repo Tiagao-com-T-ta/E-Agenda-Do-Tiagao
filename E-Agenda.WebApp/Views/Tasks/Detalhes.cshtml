@@ -5,75 +5,92 @@
     ViewBag.Titulo = "Detalhes da Tarefa";
 }
 
-<hr />
-<div class="row justify-content-center my-5">
-    <div class="col-md-8">
-        <div class="card rounded-4 border-0">
-            <div class="card-body p-md-5">
-                <h3>Detalhes da Tarefa</h3>
+<link rel="stylesheet" href="~/css/task-details.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/graph.js" defer></script>
 
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">ID:</label>
-                    <input class="form-control" value="@Model.Id" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Título:</label>
-                    <input class="form-control" value="@Model.Title" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Prioridade:</label>
-                    <input class="form-control" value="@Model.Priority" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Status:</label>
-                    <input class="form-control" value="@(Model.IsCompleted ? "Completa" : "Pendente")" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Progresso:</label>
-                    <input class="form-control" value="@Model.CompletionPercentage.ToString("0")%" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Data de Criação:</label>
-                    <input class="form-control" value="@Model.CreationDate.ToString("g")" readonly disabled />
-                </div>
-                @if (Model.IsCompleted)
-                {
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <label class="control-label fs-5">Data de Conclusão:</label>
-                        <input class="form-control" value="@Model.CompletionDate?.ToString("g")" readonly disabled />
-                    </div>
-                }
+<div class="grid-container">
+    <!-- Colunas 1 e 2: Título e detalhes -->
+    <div style="grid-column: span 2;">
+        <div class="info-box">
+            <label>Título:</label>
+            <span>@Model.Title</span>
+        </div>
 
-                <h4 class="mt-4">Itens da Tarefa</h4>
-                <div class="list-group mt-3">
-                    @foreach (var item in Model.Items)
-                    {
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="@(item.IsCompleted ? "text-decoration-line-through" : "")">
-                                @item.Title
-                            </span>
+        <div class="info-box">
+            <label>Status:</label>
+            <span class="status-box @(Model.IsCompleted ? "status-completa" : "status-pendente")">
+                @(Model.IsCompleted ? "Completa" : "Pendente")
+            </span>
+        </div>
 
-                            <form asp-action="ConcluirItem" asp-controller="Tasks" asp-route-id="@Model.Id" asp-route-itemId="@item.Id" method="post">
-                                <button type="submit" class="btn btn-sm @(item.IsCompleted ? "btn-outline-success" : "btn-outline-secondary")" title="@(item.IsCompleted ? "Desfazer" : "Concluir")">
-                                    <i class="bi @(item.IsCompleted ? "bi-check-circle-fill" : "bi-circle")"></i>
-                                </button>
-                            </form>
-                        </div>
-                    }
-                </div>
+        @* <div class="info-box progress-box" style="margin-top: 15px;">
+            <label>Progresso:</label>
+            <span>@Model.CompletionPercentage.ToString("0")%</span>
+        </div> *@
+        <div class="info-box progress-box">
+            <label>Progresso:</label>
+            <canvas id="donutChart" width="160" height="160" data-percentage="@Model.CompletionPercentage.ToString("0")"></canvas>
+        </div>
 
-                <div class="form-group d-flex align-items-center justify-content-between mt-5">
-                    <a href="/tasks" class="btn btn-secondary">Voltar para a listagem</a>
-                    <div class="d-flex gap-2">
-                        <a href="@Url.Action("AdicionarItem", "Tasks", new { id = Model.Id })" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Adicionar Item
-                        </a>
-                        <a href="@Url.Action("Editar", "Tasks", new { id = Model.Id })" class="btn btn-warning">
-                            <i class="bi bi-pencil"></i> Editar Tarefa
-                        </a>
-                    </div>
+        <div class="info-box" style="margin-top: 15px;">
+            <label>Data de Criação:</label>
+            <span>@Model.CreationDate.ToString("g")</span>
+        </div>
+
+        @if (Model.IsCompleted)
+        {
+            <div class="info-box" style="margin-top: 15px;">
+                <label>Data de Conclusão:</label>
+                <span>@Model.CompletionDate?.ToString("g")</span>
+            </div>
+        }
+    </div>
+
+    <!-- Colunas 3 e 4: Itens -->
+    <div class="task-items">
+        <h4>Itens da Tarefa</h4>
+
+        @foreach (var item in Model.Items)
+        {
+            <div class="task-item">
+                <span class="@(item.IsCompleted ? "text-decoration-line-through" : "")">
+                    @item.Title
+                </span>
+
+                <div class="task-actions">
+                    <form asp-action="ConcluirItem" asp-controller="Tasks" asp-route-id="@Model.Id" asp-route-itemId="@item.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm @(item.IsCompleted ? "btn-outline-success" : "btn-outline-secondary")" title="@(item.IsCompleted ? "Desfazer" : "Concluir")">
+                            <i class="bi @(item.IsCompleted ? "bi-check-circle-fill" : "bi-circle")"></i>
+                        </button>
+                    </form>
+
+                    <form asp-action="ExcluirItem" asp-controller="Tasks"
+                          asp-route-id="@Model.Id" asp-route-itemId="@item.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Item"
+                                onclick="return confirm('Deseja realmente excluir este item?')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
-        </div>
+        }
+    </div>
+</div>
+<div class="footer-separator"></div>
+
+<!-- Rodapé -->
+<div class="task-footer">
+    <a href="/tasks" class="btn btn-secondary">Voltar para a listagem</a>
+
+    <div class="task-actions">
+        <a href="@Url.Action("AdicionarItem", "Tasks", new { id = Model.Id })" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Adicionar Item
+        </a>
+        <a href="@Url.Action("Editar", "Tasks", new { id = Model.Id })" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar Tarefa
+        </a>
     </div>
 </div>

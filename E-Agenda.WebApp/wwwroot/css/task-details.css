@@ -1,0 +1,159 @@
+﻿.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 30px;
+}
+
+.info-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 15px; 
+}
+
+    .info-box label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+        font-size: 15px;
+    }
+
+.progress-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center; 
+    padding: 12px 16px; 
+}
+
+
+.progress-box > label {
+    align-self: flex-start;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+    .progress-box span {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .progress-box canvas {
+        width: 140px;
+        height: 140px;
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin-bottom: 16px; 
+    }
+.task-items {
+    grid-column: span 2;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    height: 520px; 
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}
+
+.task-footer {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 30px 0 30px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+    .task-item:last-child {
+        border-bottom: none;
+    }
+
+.task-actions {
+    display: flex;
+    gap: 4px; 
+}
+
+form {
+    margin: 0; 
+}
+
+.btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-outline-success {
+    border: 1px solid green;
+    color: green;
+    background: transparent;
+}
+
+.btn-outline-secondary {
+    border: 1px solid gray;
+    color: gray;
+    background: transparent;
+}
+
+.btn-outline-danger {
+    border: 1px solid red;
+    color: red;
+    background: transparent;
+}
+
+.footer-separator {
+    width: 100vw; 
+    height: 1px;
+    background-color: black;
+    margin: 0; 
+    position: relative; 
+    left: 50%;
+    right: 50%;
+    transform: translateX(-50%);
+}
+.status-box {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status-completa {
+    border: 2px solid #198754; 
+    color: #198754;
+    background-color: #e9f7ef;
+}
+
+.status-pendente {
+    border: 2px solid #6c757d; 
+    color: #6c757d;
+    background-color: #f8f9fa;
+}

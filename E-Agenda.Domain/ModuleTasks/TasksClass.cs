@@ -43,14 +43,9 @@ namespace TaskManagement.Domain.TaskModule
             CalculateCompletionPercentage();
         }
 
-        public void CompleteItem(Guid itemId)
+        public void UpdateProgress()
         {
-            var item = Items.FirstOrDefault(i => i.Id == itemId);
-            if (item != null)
-            {
-                item.Complete();
-                CalculateCompletionPercentage();
-            }
+            CalculateCompletionPercentage();
         }
 
         private void CalculateCompletionPercentage()
@@ -58,6 +53,8 @@ namespace TaskManagement.Domain.TaskModule
             if (Items.Count == 0)
             {
                 CompletionPercentage = 0;
+                IsCompleted = false;
+                CompletionDate = null;
                 return;
             }
 
@@ -67,7 +64,8 @@ namespace TaskManagement.Domain.TaskModule
             if (CompletionPercentage == 100)
             {
                 IsCompleted = true;
-                CompletionDate = DateTime.Now;
+                if (CompletionDate == null)
+                    CompletionDate = DateTime.Now;
             }
             else
             {
