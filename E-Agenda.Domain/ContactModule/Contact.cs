@@ -20,10 +20,10 @@ namespace E_Agenda.Domain.ContactModule
 
         public Contact(string name, string email, string telephone, string? role, string? company)
         {
-            if (role == null)
+            if (string.IsNullOrWhiteSpace(role))
                 role = "N/A";
 
-            if (company == null)
+            if (string.IsNullOrWhiteSpace(company))
                 company = "N/A";
 
             Id = Guid.NewGuid();
