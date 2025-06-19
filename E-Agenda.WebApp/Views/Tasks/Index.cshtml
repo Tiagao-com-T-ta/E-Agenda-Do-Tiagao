@@ -18,6 +18,40 @@
     </a>
 </div>
 
+<div class="filters">
+    <input type="text" id="searchInput" placeholder="Pesquisar...">
+
+    <select id="priorityFilter">
+        <option value="todas">Todas as prioridades</option>
+        <option value="baixa">Baixa</option>
+        <option value="media">Média</option>
+        <option value="alta">Alta</option>
+    </select>
+
+    <select id="statusFilter">
+        <option value="todos">Todos os status</option>
+        <option value="concluido">Concluído</option>
+        <option value="pendente">Pendente</option>
+    </select>
+
+    <select id="completionFilter">
+        <option value="todos">Todos % conclusão</option>
+        <option value="0-25">0% - 25%</option>
+        <option value="26-50">26% - 50%</option>
+        <option value="51-75">51% - 75%</option>
+        <option value="76-100">76% - 100%</option>
+    </select>
+
+    <select id="creationDateFilter">
+        <option value="todos">Todas datas</option>
+        <option value="ultimos7dias">Últimos 7 dias</option>
+        <option value="ultimos30dias">Últimos 30 dias</option>
+        <option value="maisAntigo">Mais antigo que 30 dias</option>
+    </select>
+
+    <label>De: <input id="dateFrom" type="date" /></label>
+    <label>Até: <input id="dateTo" type="date" /></label>
+</div>
 @if (Model.Tasks == null || Model.Tasks.Count == 0)
 {
     <div class="alert-info">Nenhuma tarefa cadastrada.</div>
@@ -36,7 +70,12 @@ else
 
         @foreach (var tarefa in Model.Tasks)
         {
-            <div class="table-row">
+            <div class="table-row"
+                 data-titulo="@tarefa.Title.ToLower()"
+                 data-prioridade="@tarefa.Priority.ToString().ToLower()"
+                 data-status="@(tarefa.IsCompleted ? "concluido" : "pendente")"
+                 data-completion="@tarefa.CompletionPercentage"
+                 data-date="@tarefa.CreationDate.Ticks">
                 <div>@tarefa.Title</div>
                 <div>@tarefa.Priority</div>
                 <div>
@@ -58,9 +97,8 @@ else
                             <i class="bi bi-trash"></i>
                         </a>
                     </div>
-
                     <div class="dropdown mobile-only">
-                        <button class="btn btn-dropdown" onclick="toggleDropdown(this)">⋮</button>
+                        <button class="btn btn-dropdown" aria-haspopup="true" aria-expanded="false">⋮</button>
                         <div class="dropdown-menu">
                             <a href="@Url.Action("Detalhes", "Tasks", new { id = tarefa.Id })">Detalhes</a>
                             <a href="@Url.Action("Editar", "Tasks", new { id = tarefa.Id })">Editar</a>
@@ -70,7 +108,7 @@ else
                 </div>
             </div>
         }
-        <script src="~/js/task-list.js" defer></script>
-
     </div>
 }
+
+<script src="~/js/task-list.js" defer></script>
