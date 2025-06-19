@@ -3,66 +3,76 @@
 
 @{
     ViewBag.Title = "Lista de Tarefas";
+    Layout = "_Layout";
 }
 
-<h2>Lista de Tarefas</h2>
+<link rel="stylesheet" href="~/css/task-list.css" />
 
-<p>
+<div class="page-header">
+    <h2 class="page-title">Lista de Tarefas</h2>
+</div>
+
+<div class="task-list-actions">
     <a class="btn btn-primary" href="@Url.Action("Cadastrar", "Tasks")">
         <i class="bi bi-plus"></i> Nova Tarefa
     </a>
-</p>
+</div>
 
 @if (Model.Tasks == null || Model.Tasks.Count == 0)
 {
-    <div class="alert alert-info">
-        Nenhuma tarefa cadastrada.
-    </div>
+    <div class="alert-info">Nenhuma tarefa cadastrada.</div>
 }
 else
 {
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Título</th>
-                <th>Prioridade</th>
-                <th>Status</th>
-                <th>% Conclusão</th>
-                <th>Data Criação</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var tarefa in Model.Tasks)
-            {
-                <tr>
-                    <td>@tarefa.Title</td>
-                    <td>@tarefa.Priority.ToString()</td>
-                    <td>
-                        @if (tarefa.IsCompleted)
-                        {
-                            <span class="badge bg-success">Concluído</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark">Pendente</span>
-                        }
-                    </td>
-                    <td>@($"{tarefa.CompletionPercentage:0}%")</td>
-                    <td>@tarefa.CreationDate.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        <a class="btn btn-sm btn-info" href="@Url.Action("Detalhes", "Tasks", new { id = tarefa.Id })" title="Detalhes">
+    <div class="task-table">
+        <div class="table-header">
+            <div>Título</div>
+            <div>Prioridade</div>
+            <div>Status</div>
+            <div>% Conclusão</div>
+            <div>Data Criação</div>
+            <div>Ações</div>
+        </div>
+
+        @foreach (var tarefa in Model.Tasks)
+        {
+            <div class="table-row">
+                <div>@tarefa.Title</div>
+                <div>@tarefa.Priority</div>
+                <div>
+                    <span class="status-badge @(tarefa.IsCompleted ? "status-completa" : "status-pendente")">
+                        @(tarefa.IsCompleted ? "Concluído" : "Pendente")
+                    </span>
+                </div>
+                <div>@($"{tarefa.CompletionPercentage:0}%")</div>
+                <div>@tarefa.CreationDate.ToString("dd/MM/yyyy")</div>
+                <div class="task-actions">
+                    <!-- Botões visíveis apenas em telas grandes -->
+                    <div class="button-group desktop-only">
+                        <a href="@Url.Action("Detalhes", "Tasks", new { id = tarefa.Id })" class="btn btn-info" title="Detalhes">
                             <i class="bi bi-eye"></i>
                         </a>
-                        <a class="btn btn-sm btn-warning" href="@Url.Action("Editar", "Tasks", new { id = tarefa.Id })" title="Editar">
+                        <a href="@Url.Action("Editar", "Tasks", new { id = tarefa.Id })" class="btn btn-warning" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a class="btn btn-sm btn-danger" href="@Url.Action("Excluir", "Tasks", new { id = tarefa.Id })" title="Excluir">
+                        <a href="@Url.Action("Excluir", "Tasks", new { id = tarefa.Id })" class="btn btn-danger" title="Excluir">
                             <i class="bi bi-trash"></i>
                         </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+
+                    <!-- Menu suspenso visível apenas no mobile -->
+                    <div class="dropdown mobile-only">
+                        <button class="btn btn-dropdown" onclick="toggleDropdown(this)">⋮</button>
+                        <div class="dropdown-menu">
+                            <a href="@Url.Action("Detalhes", "Tasks", new { id = tarefa.Id })">Detalhes</a>
+                            <a href="@Url.Action("Editar", "Tasks", new { id = tarefa.Id })">Editar</a>
+                            <a href="@Url.Action("Excluir", "Tasks", new { id = tarefa.Id })">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <script src="~/js/task-list.js" defer></script>
+
+    </div>
 }
