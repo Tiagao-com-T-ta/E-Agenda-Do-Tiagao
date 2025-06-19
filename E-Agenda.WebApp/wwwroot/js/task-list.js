@@ -14,13 +14,15 @@
         });
     }
 }
+
 const searchInput = document.getElementById("searchInput");
 const priorityFilter = document.getElementById("priorityFilter");
 const statusFilter = document.getElementById("statusFilter");
 const completionFilter = document.getElementById("completionFilter");
 const creationDateFilter = document.getElementById("creationDateFilter");
+const dateFromInput = document.getElementById("dateFrom");
+const dateToInput = document.getElementById("dateTo");
 const taskRows = document.querySelectorAll(".table-row");
-
 
 const priorityMap = {
     low: "baixa",
@@ -34,10 +36,12 @@ function normalizarTexto(texto) {
 
 function filtrarTarefas() {
     const textoFiltro = normalizarTexto(searchInput.value.trim());
-    const prioridadeSelecionada = priorityFilter.value; 
-    const statusSelecionado = statusFilter.value; 
-    const completionSelecionado = completionFilter.value; 
-    const creationDateSelecionado = creationDateFilter.value; 
+    const prioridadeSelecionada = priorityFilter.value;
+    const statusSelecionado = statusFilter.value;
+    const completionSelecionado = completionFilter.value;
+    const creationDateSelecionado = creationDateFilter.value;
+    const dateFromValue = dateFromInput.value; 
+    const dateToValue = dateToInput.value;   
 
     taskRows.forEach(row => {
         const title = normalizarTexto(row.children[0].textContent);
@@ -46,22 +50,18 @@ function filtrarTarefas() {
         const completionTexto = row.children[3].textContent.replace("%", "").trim();
         const creationDateTexto = row.children[4].textContent.trim();
 
-        
         const filtraTexto = title.includes(textoFiltro) ||
             prioridadeTextoTabela.includes(textoFiltro) ||
             statusTexto.includes(textoFiltro);
 
-        
-        const prioridadeIngles = prioridadeTextoTabela; 
+        const prioridadeIngles = prioridadeTextoTabela;
         const filtraPrioridade = prioridadeSelecionada === "todas" ||
             priorityMap[prioridadeIngles] === prioridadeSelecionada;
 
-     
         const filtraStatus = statusSelecionado === "todos" ||
             (statusSelecionado === "concluido" && statusTexto.includes("concluido")) ||
             (statusSelecionado === "pendente" && statusTexto.includes("pendente"));
 
-        
         const completionNum = parseInt(completionTexto, 10);
         let filtraCompletion = false;
         switch (completionSelecionado) {
@@ -82,9 +82,10 @@ function filtrarTarefas() {
                 break;
         }
 
-    
         const hoje = new Date();
-        const dataCriacao = new Date(creationDateTexto.split("/").reverse().join("-")); 
+        const dataCriacao = new Date(creationDateTexto.split("/").reverse().join("-"));
+
+
         let filtraData = false;
         switch (creationDateSelecionado) {
             case "todos":
@@ -97,12 +98,26 @@ function filtrarTarefas() {
                 filtraData = (hoje - dataCriacao) / (1000 * 60 * 60 * 24) <= 30;
                 break;
             case "maisAntigo":
-               
                 filtraData = (hoje - dataCriacao) / (1000 * 60 * 60 * 24) > 30;
                 break;
         }
 
-        if (filtraTexto && filtraPrioridade && filtraStatus && filtraCompletion && filtraData) {
+
+        let filtraDataIntervalo = true; 
+        if (dateFromValue) {
+            const dateFrom = new Date(dateFromValue);
+            if (dataCriacao < dateFrom) filtraDataIntervalo = false;
+        }
+        if (dateToValue) {
+            const dateTo = new Date(dateToValue);
+            dateTo.setHours(23, 59, 59, 999); 
+            if (dataCriacao > dateTo) filtraDataIntervalo = false;
+        }
+
+
+        const filtroDataFinal = filtraData && filtraDataIntervalo;
+
+        if (filtraTexto && filtraPrioridade && filtraStatus && filtraCompletion && filtroDataFinal) {
             row.style.display = "";
         } else {
             row.style.display = "none";
@@ -115,5 +130,7 @@ priorityFilter.addEventListener("change", filtrarTarefas);
 statusFilter.addEventListener("change", filtrarTarefas);
 completionFilter.addEventListener("change", filtrarTarefas);
 creationDateFilter.addEventListener("change", filtrarTarefas);
+dateFromInput.addEventListener("change", filtrarTarefas);
+dateToInput.addEventListener("change", filtrarTarefas);
 
 filtrarTarefas();
