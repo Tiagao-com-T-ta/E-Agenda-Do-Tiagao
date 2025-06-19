@@ -1,5 +1,4 @@
-﻿/* Título e Cabeçalho */
-.page-header {
+﻿.page-header {
     padding: 30px;
 }
 
@@ -15,7 +14,7 @@
     margin-bottom: 20px;
 }
 
-/* Alerta de lista vazia */
+
 .alert-info {
     background-color: #e7f3fe;
     color: #31708f;
@@ -25,7 +24,7 @@
     font-size: 16px;
 }
 
-/* Tabela e Linhas */
+
 .task-table {
     display: flex;
     flex-direction: column;
@@ -55,7 +54,7 @@
     overflow-wrap: break-word;
 }
 
-/* Status */
+
 .status-badge {
     padding: 6px 10px;
     border-radius: 6px;
@@ -76,7 +75,7 @@
     background-color: #f8f9fa;
 }
 
-/* Botões de Ação */
+
 .task-actions {
     display: flex;
     gap: 6px;

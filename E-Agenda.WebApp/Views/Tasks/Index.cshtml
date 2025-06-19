@@ -47,7 +47,6 @@ else
                 <div>@($"{tarefa.CompletionPercentage:0}%")</div>
                 <div>@tarefa.CreationDate.ToString("dd/MM/yyyy")</div>
                 <div class="task-actions">
-                    <!-- Botões visíveis apenas em telas grandes -->
                     <div class="button-group desktop-only">
                         <a href="@Url.Action("Detalhes", "Tasks", new { id = tarefa.Id })" class="btn btn-info" title="Detalhes">
                             <i class="bi bi-eye"></i>
@@ -60,7 +59,6 @@ else
                         </a>
                     </div>
 
-                    <!-- Menu suspenso visível apenas no mobile -->
                     <div class="dropdown mobile-only">
                         <button class="btn btn-dropdown" onclick="toggleDropdown(this)">⋮</button>
                         <div class="dropdown-menu">
