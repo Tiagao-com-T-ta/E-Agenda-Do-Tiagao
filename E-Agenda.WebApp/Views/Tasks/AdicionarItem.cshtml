@@ -15,6 +15,12 @@
 
     <button type="submit" class="btn btn-primary mt-3">Adicionar</button>
     <a href="@Url.Action("Detalhes", "Tasks", new { id = Model.Task.Id })" class="btn btn-secondary mt-3">Cancelar</a>
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger" style="margin-top: 20px;">
+            @ViewBag.Erro
+        </div>
+    }
 </form>
 
 @section Scripts {

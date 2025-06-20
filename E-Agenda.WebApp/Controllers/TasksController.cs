@@ -158,6 +158,18 @@ public class TasksController : Controller
             };
             return View(viewModelInvalid);
         }
+        bool itemDuplicado = tarefa.Items
+            .Any(i => i.Title.Trim().Equals(newItem.Title.Trim(), StringComparison.OrdinalIgnoreCase));
+
+        if (itemDuplicado)
+        {
+            var viewModel = new ManageTaskItemsViewModel(tarefa)
+            {
+                NewItem = newItem
+            };
+            ViewBag.Erro = "Já existe esse item.";
+            return View(viewModel);
+        }
 
         var taskItem = new TaskItem(newItem.Title);
         tarefa.AddItem(taskItem);
