@@ -1,0 +1,43 @@
+﻿@using E_Agenda.WebApp.Models
+
+@model ViewAppointmentsViewModel
+
+@{
+    ViewBag.Title = "Lista de Compromissos";
+    Layout = "_Layout";
+}
+
+<p>
+    <a class="btn btn-primary px-4" href="/appointments/register">
+        <i class="bi bi-plus"></i>
+        Cadastrar Novo
+    </a>
+</p>
+
+<hr />
+
+<div class="d-flex flex-wrap gap-2">
+    @foreach (var item in Model.Appointments)
+    {
+        <div class="col-12 col-md-3">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h5 class="card-title">Assunto: @item.Topic</h5>
+                    <p class="card-text"><span class="fw-semibold">Email:</span> @item.Topic</p>
+
+                    <span class="d-flex gap-1 justify-content-end mt-4">
+                        <a href="/appointments/details/@item.Id" class="btn btn-secondary rounded-circle opcao-card">
+                            <i class="bi bi-search"></i>
+                        </a>
+                        <a href="/appointments/edit/@item.Id" class="btn btn-primary rounded-circle opcao-card">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="/appointments/delete/@item.Id" class="btn btn-danger rounded-circle opcao-card">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

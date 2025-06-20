@@ -10,7 +10,7 @@ namespace E_Agenda.WebApp.Models
     {
         [Required(ErrorMessage = "O campo \"Nome\" é obrigatório.")]
         [MinLength(2, ErrorMessage = "O campo \"Nome\" precisa conter ao menos 2 caracteres.")]
-        [MaxLength(100, ErrorMessage = "O campo \"Nome\" precisa conter no máximo 100 caracteres.")]
+        [MaxLength(100, ErrorMessage = "O campo \"Nome\" precisa conter no máximo 100 caracteres.") ]
         public string Name { get; set; }
         
         [Required(ErrorMessage = "O campo \"Email\" é obrigatório.")]

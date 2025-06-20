@@ -1,4 +1,5 @@
-﻿using E_Agenda.Domain.ContactModule;
+﻿using E_Agenda.Domain.AppointmentModule;
+using E_Agenda.Domain.ContactModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace E_Agenda.Structure.Shared
 
         // as listas vão aqui.
         public List<Contact> Contacts { get; set; }
+        public List<Appointment> Appointments { get; set; }
 
         public DataContext()
         {
@@ -70,6 +72,7 @@ namespace E_Agenda.Structure.Shared
 
             // Carregar as listas aqui.
             Contacts = dataContext.Contacts;
+            Appointments = dataContext.Appointments;
         }
     }
 }
