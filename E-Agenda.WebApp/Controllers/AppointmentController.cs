@@ -14,13 +14,12 @@ namespace E_Agenda.WebApp.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IAppointmentRepository appointmentRepository;
-        private readonly IContactRepository contactRepository;
 
         public AppointmentController()
         {
             dataContext = new DataContext(true);
             appointmentRepository = new AppointmentRepositoryFile(dataContext);
-            contactRepository = new ContactRepositoryFile(dataContext);
+            
         }
         public IActionResult Index()
         {
@@ -43,7 +42,7 @@ namespace E_Agenda.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterAppointmentViewModel registerVM)
         {
-            var registers = appointmentRepository.GetAllRegisters();
+            var registers = appointmentRepository.GetAllRegisters(); 
 
             foreach (var register in registers)
             {
@@ -61,11 +60,9 @@ namespace E_Agenda.WebApp.Controllers
 
                 if (registerVM.Type == "Online" && string.IsNullOrWhiteSpace(registerVM.Link))
                 {
-                    ModelState.AddModelError(nameof(registerVM.Location), "O campo \"Link\" é obrigatório para compromissos Online.");
+                    ModelState.AddModelError(nameof(registerVM.Link), "O campo \"Link\" é obrigatório para compromissos Online.");
                     break;
                 }
-
-
 
             }
 
@@ -87,15 +84,14 @@ namespace E_Agenda.WebApp.Controllers
             var selectedRegister = appointmentRepository.GetRegisterById(id);
 
             var editVM = new EditAppointmentViewModel(
-                id: selectedRegister.Id,
+                selectedRegister.Id,
                 selectedRegister.Topic,
                 selectedRegister.Date,
                 selectedRegister.StartTime,
                 selectedRegister.EndTime,
                 selectedRegister.Type,
-                selectedRegister.Link,
-                selectedRegister.Location,
-                selectedRegister.Contact
+                selectedRegister.Location,  
+                selectedRegister.Link       
             );
 
             return View(editVM);
@@ -109,7 +105,7 @@ namespace E_Agenda.WebApp.Controllers
 
             foreach (var reg in registers)
             {
-                if (!reg.Id.Equals(id) && reg.Date.Equals(model.Date))
+                if (!reg.Id.Equals(id) && reg.Date.Equals(model.Date) && reg.StartTime.Equals(model.StartTime))
                 {
                     ModelState.AddModelError(nameof(model.Date), "Já existe um compromisso marcado neste horário.");
                     break;
@@ -177,9 +173,8 @@ namespace E_Agenda.WebApp.Controllers
                 selectedRegister.StartTime,
                 selectedRegister.EndTime,
                 selectedRegister.Type,
-                selectedRegister.Location,
-                selectedRegister.Link,
-                selectedRegister.Contact
+                selectedRegister.Link,      
+                selectedRegister.Location   
             );
 
             return View(detailsVM);

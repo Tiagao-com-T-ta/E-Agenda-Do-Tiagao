@@ -23,6 +23,7 @@ namespace E_Agenda.Structure.Shared
         public DataContext()
         {
             Contacts = new List<Contact>();
+            Appointments = new List<Appointment>();
         }
 
         public DataContext(bool loadData) : this()

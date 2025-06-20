@@ -1,12 +1,13 @@
 ﻿using E_Agenda.Domain.AppointmentModule;
 using E_Agenda.Domain.ContactModule;
 using E_Agenda.WebApp.Extensions;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace E_Agenda.WebApp.Models
 {
-    public abstract class AppointmentFormViewModels
+    public abstract class AppointmentFormViewModel
     {
         [Required(ErrorMessage = "O campo \"Assunto\" é obrigatório.")]
         [MinLength(2, ErrorMessage = "O campo \"Assunto\" precisa conter ao menos 2 caracteres.")]
@@ -29,13 +30,13 @@ namespace E_Agenda.WebApp.Models
         public string? Link { get; set; }
         public string? Location { get; set; }
 
-        public Contact Contact { get; set; }
+        public Guid ContactId { get; set; }
     }
 
-    public class RegisterAppointmentViewModel : AppointmentFormViewModels
+    public class RegisterAppointmentViewModel : AppointmentFormViewModel
     {
         public RegisterAppointmentViewModel() { }
-        public RegisterAppointmentViewModel(string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? link, string? location, Contact contact)
+        public RegisterAppointmentViewModel(string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? location, string? link)
         {
             Topic = topic;
             Date = date;
@@ -44,15 +45,15 @@ namespace E_Agenda.WebApp.Models
             Type = type;
             Link = link;
             Location = location;
-            Contact = contact;
         }
+
     }
 
-    public class EditAppointmentViewModel : AppointmentFormViewModels
+    public class EditAppointmentViewModel : AppointmentFormViewModel
     {
         public Guid Id { get; set; }
         public EditAppointmentViewModel() { }
-        public EditAppointmentViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? link, string? location, Contact contact) : this()
+        public EditAppointmentViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? location, string? link) : this()
         {
             Id = id;
             Topic = topic;
@@ -62,7 +63,6 @@ namespace E_Agenda.WebApp.Models
             Type = type;
             Link = link;
             Location = location;
-            Contact = contact;
         }
     }
 
@@ -70,6 +70,7 @@ namespace E_Agenda.WebApp.Models
     {
         public Guid Id { get; set; }
         public string Topic { get; set; }
+
         public DeleteAppointmentViewModel(Guid id, string topic)
         {
             Id = id;
@@ -89,6 +90,7 @@ namespace E_Agenda.WebApp.Models
                 Appointments.Add(appointment.ToDetailsVM());
             }
         }
+
     }
 
     public class AppointmentDetailsViewModel
@@ -99,12 +101,10 @@ namespace E_Agenda.WebApp.Models
         public TimeOnly StartTime { get; set; }
         public TimeOnly EndTime { get; set; }
         public string Type { get; set; }
-        public string? Link { get; set; }
-        public string? Location { get; set; }
-        public Contact? Contact { get; set; }
+        public string Link { get; set; }
+        public string Location { get; set; }
 
-        public AppointmentDetailsViewModel() { }
-        public AppointmentDetailsViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? location, string? link, Contact? contact)
+        public AppointmentDetailsViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string link, string location)
         {
             Id = id;
             Topic = topic;
@@ -112,21 +112,24 @@ namespace E_Agenda.WebApp.Models
             StartTime = startTime;
             EndTime = endTime;
             Type = type;
-            Location = location;
             Link = link;
-            Contact = contact;
+            Location = location;
         }
     }
 
-    public class SelectAppointmentsViewModel
+    public class SelectAppointmentViewModel
     {
         public Guid Id { get; set; }
         public string Topic { get; set; }
 
-        public SelectAppointmentsViewModel(Guid id, string topic)
+        public SelectAppointmentViewModel(Guid id, string topic)
         {
             Id = id;
             Topic = topic;
         }
     }
+
+
+
 }
+

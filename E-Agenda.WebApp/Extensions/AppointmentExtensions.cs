@@ -5,7 +5,7 @@ namespace E_Agenda.WebApp.Extensions
 {
     public static class AppointmentExtensions
     {
-        public static Appointment ToEntity(this AppointmentFormViewModels form)
+        public static Appointment ToEntity(this AppointmentFormViewModel form)
         {
             return new Appointment(
                 form.Topic,
@@ -14,11 +14,10 @@ namespace E_Agenda.WebApp.Extensions
                 form.EndTime,
                 form.Type,
                 form.Link,
-                form.Location,
-                form.Contact
-
+                form.Location
             );
         }
+
         public static AppointmentDetailsViewModel ToDetailsVM(this Appointment appointment)
         {
             return new AppointmentDetailsViewModel(
