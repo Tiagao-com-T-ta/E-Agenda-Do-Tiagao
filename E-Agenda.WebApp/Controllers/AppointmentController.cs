@@ -179,6 +179,11 @@ namespace E_Agenda.WebApp.Controllers
         public IActionResult Details(Guid id)
         {
             var selectedRegister = appointmentRepository.GetRegisterById(id);
+
+            Contact? contact = null;
+            if (selectedRegister.ContactId.HasValue)
+                contact = contactRepository.GetRegisterById(selectedRegister.ContactId.Value);
+
             var detailsVM = new AppointmentDetailsViewModel(
                 selectedRegister.Id,
                 selectedRegister.Topic,
@@ -186,8 +191,10 @@ namespace E_Agenda.WebApp.Controllers
                 selectedRegister.StartTime,
                 selectedRegister.EndTime,
                 selectedRegister.Type,
-                selectedRegister.Link,      
-                selectedRegister.Location   
+                selectedRegister.Link,
+                selectedRegister.Location,
+                selectedRegister.ContactId,
+                contact?.Name
             );
 
             return View(detailsVM);

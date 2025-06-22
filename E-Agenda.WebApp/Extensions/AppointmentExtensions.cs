@@ -29,7 +29,9 @@ namespace E_Agenda.WebApp.Extensions
                 appointment.EndTime,
                 appointment.Type,
                 appointment.Link,
-                appointment.Location
+                appointment.Location,
+                appointment.ContactId,
+                appointment.Contact?.Name ?? "Nenhum"
             );
         }
     }

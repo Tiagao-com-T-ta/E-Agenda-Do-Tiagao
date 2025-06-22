@@ -105,8 +105,10 @@ namespace E_Agenda.WebApp.Models
         public string Type { get; set; }
         public string Link { get; set; }
         public string Location { get; set; }
+        public Guid? ContactId { get; set; }
+        public string? ContactName { get; set; }
 
-        public AppointmentDetailsViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string link, string location)
+        public AppointmentDetailsViewModel(Guid id, string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string link, string location, Guid? contactId, string? contactName)
         {
             Id = id;
             Topic = topic;
@@ -116,6 +118,8 @@ namespace E_Agenda.WebApp.Models
             Type = type;
             Link = link;
             Location = location;
+            ContactId = contactId;
+            ContactName = contactName;
         }
     }
 
