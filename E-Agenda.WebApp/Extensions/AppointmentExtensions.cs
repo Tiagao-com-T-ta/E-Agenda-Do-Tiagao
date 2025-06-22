@@ -14,7 +14,8 @@ namespace E_Agenda.WebApp.Extensions
                 form.EndTime,
                 form.Type,
                 form.Link,
-                form.Location
+                form.Location,
+                form.ContactId
             );
         }
 

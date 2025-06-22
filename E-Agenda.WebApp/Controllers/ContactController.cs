@@ -154,6 +154,17 @@ namespace E_Agenda.WebApp.Controllers
         [HttpPost("delete/{id:guid}")]
         public IActionResult ConfirmDelete(Guid id)
         {
+            var hasAppointments = dataContext.Appointments.Any(a => a.ContactId == id);
+            if (hasAppointments)
+            {
+                ModelState.AddModelError("", "Não é possível excluir um contato vinculado a um compromisso.");
+                var contact = contactRepository.GetRegisterById(id);
+                var deleteVM = new DeleteContactViewModel(id, contact.Name);
+                return View("Delete", deleteVM);
+            }
+
+
+
             contactRepository.Delete(id);
 
             return RedirectToAction(nameof(Index));

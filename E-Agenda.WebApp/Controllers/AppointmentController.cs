@@ -6,6 +6,7 @@ using E_Agenda.Structure.Shared;
 using E_Agenda.WebApp.Extensions;
 using E_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace E_Agenda.WebApp.Controllers
 {
@@ -14,12 +15,14 @@ namespace E_Agenda.WebApp.Controllers
     {
         private readonly DataContext dataContext;
         private readonly IAppointmentRepository appointmentRepository;
+        private readonly IContactRepository contactRepository;
 
         public AppointmentController()
         {
             dataContext = new DataContext(true);
             appointmentRepository = new AppointmentRepositoryFile(dataContext);
-            
+            contactRepository = new ContactRepositoryFile(dataContext);
+
         }
         public IActionResult Index()
         {
@@ -34,6 +37,9 @@ namespace E_Agenda.WebApp.Controllers
         public IActionResult Register()
         {
             var registerVM = new RegisterAppointmentViewModel();
+            registerVM.Contacts = contactRepository.GetAllRegisters()
+            .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+            .ToList();
 
             return View(registerVM);
         }
@@ -62,6 +68,13 @@ namespace E_Agenda.WebApp.Controllers
                 {
                     ModelState.AddModelError(nameof(registerVM.Link), "O campo \"Link\" é obrigatório para compromissos Online.");
                     break;
+                }
+                if (!ModelState.IsValid)
+                {
+                    registerVM.Contacts = contactRepository.GetAllRegisters()
+                        .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                        .ToList();
+                    return View(registerVM);
                 }
 
             }

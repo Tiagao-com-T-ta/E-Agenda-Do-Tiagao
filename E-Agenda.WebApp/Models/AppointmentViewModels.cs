@@ -1,6 +1,7 @@
 ﻿using E_Agenda.Domain.AppointmentModule;
 using E_Agenda.Domain.ContactModule;
 using E_Agenda.WebApp.Extensions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -30,7 +31,8 @@ namespace E_Agenda.WebApp.Models
         public string? Link { get; set; }
         public string? Location { get; set; }
 
-        public Guid ContactId { get; set; }
+        public Guid? ContactId { get; set; }
+        public List<SelectListItem>? Contacts { get; set; }
     }
 
     public class RegisterAppointmentViewModel : AppointmentFormViewModel

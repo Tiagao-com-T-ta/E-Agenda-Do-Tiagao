@@ -17,17 +17,20 @@ namespace E_Agenda.Domain.AppointmentModule
         public string Type { get; set; }
         public string? Link { get; set; } = "-/-";
         public string? Location { get; set; } = "-/-";
+        public Guid? ContactId { get; set; }
+        public Contact? Contact { get; set; }
 
 
         public Appointment() { }
 
-        public Appointment(string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? link, string? location)
+        public Appointment(string topic, DateOnly date, TimeOnly startTime, TimeOnly endTime, string type, string? link, string? location, Guid? contactId = null)
         {
             if (string.IsNullOrWhiteSpace(link))
                 link = "-/-";
 
             if (string.IsNullOrWhiteSpace(location))
                 location = "-/-";
+
 
             Id = Guid.NewGuid();
             Topic = topic;
@@ -37,6 +40,7 @@ namespace E_Agenda.Domain.AppointmentModule
             Type = type;
             Link = link;
             Location = location;
+            ContactId = contactId;
         }
 
         public override void Update(Appointment editedRegister)

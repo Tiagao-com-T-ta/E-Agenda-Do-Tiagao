@@ -63,6 +63,13 @@
                         <span asp-validation-for="Link" class="text-danger"></span>
 
                     </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="ContactId" class="control-label fs-5">Contato:</label>
+                        <select asp-for="ContactId" class="form-control" asp-items="Model.Contacts">
+                            <option value="">Nenhum</option>
+                        </select>
+                        <span asp-validation-for="ContactId" class="text-danger"></span>
+                    </div>
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
                         <a href="/appointments">Voltar para a listagem</a>
                         <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
