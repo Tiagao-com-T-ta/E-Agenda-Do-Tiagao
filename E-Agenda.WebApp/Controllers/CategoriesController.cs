@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Agenda.WebApp.Controllers
 
-    //[Route("categories")]
   
 {
+    [Route("categories")]
     public class CategoriesController : Controller
     {
         private readonly DataContext dataContext;

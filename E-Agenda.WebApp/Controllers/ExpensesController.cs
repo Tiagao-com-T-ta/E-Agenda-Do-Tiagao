@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Agenda.WebApp.Controllers
 
-    //[Route("expenses")]
+    
 {
+    [Route("expenses")]
     public class ExpensesController : Controller
     {
         private readonly DataContext dataContext;

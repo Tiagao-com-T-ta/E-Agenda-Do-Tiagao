@@ -19,9 +19,6 @@ namespace E_Agenda.Structure.Shared
 
         public List<Category> Categories { get; internal set; }
         public List<Expense> Expenses { get; internal set; }
-
-
-        // as listas vão aqui.
         public List<TasksClass> TasksClass { get; set;  }
         public List<Contact> Contacts { get; set; }
         public List<Appointment> Appointments { get; set; }
@@ -81,10 +78,7 @@ namespace E_Agenda.Structure.Shared
             if (dataContext == null) return;
 
             Categories = dataContext.Categories;
-
             Expenses = dataContext.Expenses;
-
-            // Carregar as listas aqui.
             TasksClass = dataContext.TasksClass;
             Contacts = dataContext.Contacts;
             Appointments = dataContext.Appointments;
