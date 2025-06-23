@@ -1,5 +1,7 @@
 ﻿using E_Agenda.Domain.AppointmentModule;
 using E_Agenda.Domain.ContactModule;
+using E_Agenda.Domain.CategoriesModule;
+using E_Agenda.Domain.ExpensesModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,9 @@ namespace E_Agenda.Structure.Shared
         private string folder = "C:\\temp";
         private string file = "E-Agenda-Data.json";
 
+        public List<Category> Categories { get; internal set; }
+        public List<Expense> Expenses { get; internal set; }
+
 
         // as listas vão aqui.
         public List<TasksClass> TasksClass { get; set;  }
@@ -26,6 +31,8 @@ namespace E_Agenda.Structure.Shared
             TasksClass = new List<TasksClass>();
             Contacts = new List<Contact>();
             Appointments = new List<Appointment>();
+            Categories = new List<Category>();
+            Expenses = new List<Expense>();
         }
 
         public DataContext(bool loadData) : this()
@@ -72,6 +79,10 @@ namespace E_Agenda.Structure.Shared
             DataContext? dataContext = JsonSerializer.Deserialize<DataContext>(json, jsonOptions)!;
             
             if (dataContext == null) return;
+
+            Categories = dataContext.Categories;
+
+            Expenses = dataContext.Expenses;
 
             // Carregar as listas aqui.
             TasksClass = dataContext.TasksClass;
