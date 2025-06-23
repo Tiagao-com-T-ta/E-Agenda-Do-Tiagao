@@ -1,4 +1,5 @@
-﻿using E_Agenda.Domain.Shared;
+﻿using E_Agenda.Domain.CategoryModule;
+using E_Agenda.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace E_Agenda.Domain.CategoriesModule
 {
-    public interface ICategoriesRepository : IRepository<Category>;
+    public interface ICategoryRepository : IRepository<Category>;
     
 }

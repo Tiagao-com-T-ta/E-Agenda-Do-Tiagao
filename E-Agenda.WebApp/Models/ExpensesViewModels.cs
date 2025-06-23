@@ -1,139 +1,69 @@
-﻿using E_Agenda.Domain.CategoriesModule;
+﻿using E_Agenda.Domain.CategoryModule;
+using E_Agenda.Domain.ExpenseModule;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_Agenda.WebApp.Models
 {
-    public abstract class ExpensesViewModels
+    public abstract class ExpenseViewModel
     {
+        [Required(ErrorMessage = "Description is required")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Description must be between 2 and 100 characters")]
         public string Description { get; set; }
 
-        public DateTime When { get; set; }
+        [Required(ErrorMessage = "Date is required")]
+        public DateTime Date { get; set; }
 
-        public string Amount { get; set; }
+        [Required(ErrorMessage = "Amount is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than 0")]
+        public decimal Amount { get; set; }
 
-        public string PaymentMethod { get; set; }
+        [Required(ErrorMessage = "Payment method is required")]
+        public PaymentMethod PaymentMethod { get; set; }
 
-        public List<Category> Category { get; set; }
-
+        [Required(ErrorMessage = "At least one category is required")]
+        public List<Category> SelectedCategories { get; set; } = new List<Category>();
     }
 
-    public class RegisterExpensesViewModels : ExpensesViewModels
+    public class RegisterExpenseViewModel : ExpenseViewModel
     {
-        public RegisterExpensesViewModels() { }
-
-        public RegisterExpensesViewModels(string description, DateTime when, string amount, string paymentMethod, Category category) : this()
-        {
-            Description = description;
-            When = when;
-            Amount = amount;
-            PaymentMethod = paymentMethod;
-            
-        }
+        public RegisterExpenseViewModel() { }
     }
 
-    public class EditExpensesViewModels : ExpensesViewModels
+    public class EditExpenseViewModel : ExpenseViewModel
     {
+        public Guid Id { get; set; }
+    }
+
+    public class ExpenseDetailsViewModel
+    {
+        public Guid Id { get; set; }
         public string Description { get; set; }
-
-        public DateTime When { get; set; }
-
-        public string Amount { get; set; }
-
-        public string PaymentMethod { get; set; }
-
-        public List<Category> Category { get; set; }
-        public EditExpensesViewModels() { }
-
-        public EditExpensesViewModels(string description, DateTime when, string amount, string paymentMethod, Category category)
-        {
-            Description = description;
-            When = when;
-            Amount = amount;
-            PaymentMethod = paymentMethod;
-        }
-    }
-
-    public class DeleteExpensesViewModels
-    {
-        public string Description { get; set; }
-
-        public DateTime When { get; set; }
-
-        public string Amount { get; set; }
-
-        public string PaymentMethod { get; set; }
-
-        public List<Category> Category { get; set; }
-
-        public DeleteExpensesViewModels() { }
-
-        public DeleteExpensesViewModels(string description, DateTime when, string amount, string paymentMethod, Category category) : this()
-        {
-            Description = description;
-            When = when;
-            Amount = amount;
-            PaymentMethod = paymentMethod;
-        }
-
-    }
-
-    public class ViewExpensesViewModels
-    {
-        public List<CategoriesDetailsViewModel> Registry { get; }
-
-        public ViewExpensesViewModels(List<Category> categories)
-        {
-            Registry = [];
-
-            foreach (var category in categories)
-            {
-                var detailsVM = category.ForDetailsVM();
-
-               // Registry.Add(detailsVM);
-            }
-        }
-    }
-
-    public class ExpensesDetailsViewModel
-    {
-        public string Description { get; set; }
-
-        public DateTime When { get; set; }
-
-        public string Amount { get; set; }
-
-        public string PaymentMethod { get; set; }
-
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
+        public string FormattedAmount => Amount.ToString("C");
+        public PaymentMethod PaymentMethod { get; set; }
         public List<Category> Categories { get; set; }
 
-        public ExpensesDetailsViewModel(string description, DateTime when, string amount, string paymentMethod, List<Category> categories)
+        public ExpenseDetailsViewModel(Expense expense)
         {
-            Description = description;
-            When = when;
-            Amount = amount;
-            PaymentMethod = paymentMethod;
-            Categories = categories;
+            Id = expense.Id;
+            Description = expense.Description;
+            Date = expense.Date;
+            Amount = expense.Amount;
+            PaymentMethod = expense.PaymentMethod;
+            Categories = expense.Category;
         }
     }
 
-    public class SelectExpensesViewModels
+    public class ExpenseListViewModel
     {
-        public string Description { get; set; }
+        public List<ExpenseDetailsViewModel> Expenses { get; set; }
 
-        public DateTime When { get; set; }
-
-        public string Amount { get; set; }
-
-        public string PaymentMethod { get; set; }
-
-        public List<Category> Category { get; set; }
-
-        public SelectExpensesViewModels(string description, DateTime when, string amount, string paymentMethod, Category category)
+        public ExpenseListViewModel(List<Expense> expenses)
         {
-            Description = description;
-            When = when;
-            Amount = amount;
-            PaymentMethod = paymentMethod;
-
+            Expenses = expenses.ConvertAll(e => new ExpenseDetailsViewModel(e));
         }
     }
 }

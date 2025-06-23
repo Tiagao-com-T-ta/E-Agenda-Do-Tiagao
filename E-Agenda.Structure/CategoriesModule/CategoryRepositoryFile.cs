@@ -1,4 +1,5 @@
 ﻿using E_Agenda.Domain.CategoriesModule;
+using E_Agenda.Domain.CategoryModule;
 using E_Agenda.Domain.Shared;
 using E_Agenda.Structure.Shared;
 using System;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace E_Agenda.Structure.CategoriesModule
 {
-    public class CategoriesRepositoryFile : BaseRepositoryFile<Category>, ICategoriesRepository
+    public class CategoryRepositoryFile : BaseRepositoryFile<Category>, ICategoryRepository
     {
-        public CategoriesRepositoryFile(DataContext dataContext) : base(dataContext)
+        public CategoryRepositoryFile(DataContext dataContext) : base(dataContext)
         {
         }
 

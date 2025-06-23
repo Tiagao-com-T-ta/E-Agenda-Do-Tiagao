@@ -1,33 +1,34 @@
-﻿using E_Agenda.Domain.ExpensesModule;
+﻿using E_Agenda.Domain.ExpenseModule;
 using E_Agenda.Domain.Shared;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace E_Agenda.Domain.CategoriesModule
+namespace E_Agenda.Domain.CategoryModule
 {
     public class Category : BaseEntity<Category>
     {
         public string Title { get; set; }
-        public List<Expense> Expenses { get; }        
+        public List<Expense> Expenses { get; set; }
+
         public Category()
         {
+            Expenses = new List<Expense>();
         }
 
         public Category(string title) : this()
         {
-            Title = title;
-            Expenses = new List<Expense>();
             Id = Guid.NewGuid();
+            Title = title;
         }
 
-        public override void Update(Category editedRegister)
+        public override void Update(Category editedCategory)
         {
-           Title = editedRegister.Title;
+            Title = editedCategory.Title;
+        }
 
+        public void AddExpense(Expense expense)
+        {
+            Expenses.Add(expense);
         }
     }
 }

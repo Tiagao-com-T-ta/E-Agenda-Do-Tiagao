@@ -1,4 +1,5 @@
 ﻿using E_Agenda.Domain.CategoriesModule;
+using E_Agenda.Domain.ExpenseModule;
 using E_Agenda.Domain.Shared;
 using System;
 using System.Collections.Generic;

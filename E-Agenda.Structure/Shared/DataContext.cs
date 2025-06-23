@@ -9,6 +9,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using TaskManagement.Domain.TaskModule;
+using E_Agenda.Domain.CategoryModule;
+using E_Agenda.Domain.ExpenseModule;
 
 namespace E_Agenda.Structure.Shared
 {

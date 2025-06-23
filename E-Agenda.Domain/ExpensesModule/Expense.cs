@@ -1,49 +1,42 @@
 ﻿using E_Agenda.Domain.CategoriesModule;
+using E_Agenda.Domain.CategoryModule;
 using E_Agenda.Domain.Shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace E_Agenda.Domain.ExpensesModule
+namespace E_Agenda.Domain.ExpenseModule
 {
     public class Expense : BaseEntity<Expense>
     {
         public string Description { get; set; }
-
-        public DateTime When { get; set; }
-
-        public string Amount { get; set; }
-
-        public string PaymentMethod { get; set; }
-
+        public DateTime Date { get; set; }
+        public decimal Amount { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public List<Category> Category { get; set; }
-
 
         public Expense()
         {
+            Category = new List<Category>();
         }
 
-        public Expense (string description, DateTime when, string amount, string paymentMethod, List<Category> category) : this()
+        public Expense(string description, DateTime date, decimal amount,
+                      PaymentMethod paymentMethod, List<Category> categories) : this()
         {
             Id = Guid.NewGuid();
             Description = description;
-            When = when;
+            Date = date;
             Amount = amount;
             PaymentMethod = paymentMethod;
-            Category = category;
-            Category = new List<Category>();
-
+            Category = categories ?? new List<Category>();
         }
 
-        public override void Update(Expense editedRegister)
+        public override void Update(Expense editedExpense)
         {
-            Description = editedRegister.Description;
-            When = editedRegister.When;
-            Amount = editedRegister.Amount;
-            PaymentMethod = editedRegister.PaymentMethod;
-            Category = editedRegister.Category;
+            Description = editedExpense.Description;
+            Date = editedExpense.Date;
+            Amount = editedExpense.Amount;
+            PaymentMethod = editedExpense.PaymentMethod;
+            Category = editedExpense.Category;
         }
     }
 }
