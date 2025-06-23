@@ -86,15 +86,16 @@ namespace E_Agenda.WebApp.Models
 
             foreach (var category in categories)
             {
-                var detailsVM = category.ForDetailsVM();
+                //var detailsVM = category.ForDetailsVM();
 
-               // Registry.Add(detailsVM);
+               //Registry.Add(detailsVM);
             }
         }
     }
 
     public class ExpensesDetailsViewModel
     {
+        public Guid Id { get; set; }
         public string Description { get; set; }
 
         public DateTime When { get; set; }

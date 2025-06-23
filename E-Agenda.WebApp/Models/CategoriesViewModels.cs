@@ -57,7 +57,7 @@ namespace E_Agenda.WebApp.Models
 
             foreach (var category in categories)
             {
-               // var detailsVM = category.ForDetailsVM();
+               var detailsVM = category.ForDetailsVM();
 
               //  Registry.Add(detailsVM);
             }

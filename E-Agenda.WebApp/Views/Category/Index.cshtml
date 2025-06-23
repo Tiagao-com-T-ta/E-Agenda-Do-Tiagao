@@ -1,10 +1,9 @@
 ﻿@using E_Agenda.WebApp.Models
-
-@model ViewExpensesViewModels
+@model ViewCategoriesViewModel
 
 @{
-    ViewBag.Title = "Lista de Despesas";
     Layout = "_Layout";
+    ViewBag.Title = "Listagem de Categorias";
 }
 
 <link rel="stylesheet" href="~/css/task-list.css" />
@@ -19,7 +18,7 @@
     </a>
 </div>
 
-@if (Model.Expenses == null || Model.Expenses.Count == 0)
+@if (Model.Categories == null || Model.Expenses.Count == 0)
 {
     <div class="alert-info mt-4">Nenhuma Despesa cadastrada.</div>
 }
