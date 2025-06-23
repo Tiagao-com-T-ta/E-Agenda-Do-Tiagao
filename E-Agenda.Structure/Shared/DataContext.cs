@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using TaskManagement.Domain.TaskModule;
 
 namespace E_Agenda.Structure.Shared
 {
@@ -17,11 +17,13 @@ namespace E_Agenda.Structure.Shared
 
 
         // as listas vão aqui.
+        public List<TasksClass> TasksClass { get; set;  }
         public List<Contact> Contacts { get; set; }
         public List<Appointment> Appointments { get; set; }
 
         public DataContext()
         {
+            TasksClass = new List<TasksClass>();
             Contacts = new List<Contact>();
             Appointments = new List<Appointment>();
         }
@@ -72,6 +74,7 @@ namespace E_Agenda.Structure.Shared
             if (dataContext == null) return;
 
             // Carregar as listas aqui.
+            TasksClass = dataContext.TasksClass;
             Contacts = dataContext.Contacts;
             Appointments = dataContext.Appointments;
         }

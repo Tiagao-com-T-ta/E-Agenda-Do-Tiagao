@@ -59,4 +59,3 @@ namespace E_Agenda.Structure.Shared
         }
     }
 }
-
