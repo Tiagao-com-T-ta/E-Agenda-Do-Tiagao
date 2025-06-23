@@ -47,7 +47,7 @@ namespace E_Agenda.WebApp.Controllers
                 .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Title })
                 .ToList();
 
-            return View(viewModel);
+            return View("Create", viewModel);
         }
 
         [HttpPost("create")]

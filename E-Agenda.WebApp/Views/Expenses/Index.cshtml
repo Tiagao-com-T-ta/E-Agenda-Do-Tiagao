@@ -1,69 +1,70 @@
-﻿@* @using E_Agenda.WebApp.Models
-
-@model ViewExpensesViewModels
+﻿@using E_Agenda.WebApp.Models
+@model ExpenseListViewModel
 
 @{
-    ViewBag.Title = "Lista de Despesas";
+    ViewBag.Title = "Expenses List";
     Layout = "_Layout";
 }
 
 <link rel="stylesheet" href="~/css/task-list.css" />
 
 <div class="page-header">
-    <h2 class="page-title">Lista de Despesas</h2>
+    <h2 class="page-title">Expenses List</h2>
 </div>
 
 <div class="task-list-actions">
     <a class="btn btn-primary" href="/expenses/create">
-        <i class="bi bi-plus"></i> Nova Despesa
+        <i class="bi bi-plus"></i> New Expense
     </a>
 </div>
 
 @if (Model.Expenses == null || Model.Expenses.Count == 0)
 {
-    <div class="alert-info mt-4">Nenhuma Despesa cadastrada.</div>
+    <div class="alert-info mt-4">No expenses registered.</div>
 }
 else
 {
     <div class="task-table mt-4">
         <div class="table-header">
-            <div>Descrição</div>
-            <div>Data</div>
-            <div>Valor</div>
-            <div>M. De Pagamento</div>
-            <div>Categoria</div>
-            <div>Ações</div>
+            <div>Description</div>
+            <div>Date</div>
+            <div>Amount</div>
+            <div>Payment Method</div>
+            <div>Categories</div>
+            <div>Actions</div>
         </div>
         @foreach (var item in Model.Expenses)
         {
             <div class="table-row">
                 <div>@item.Description</div>
-                <div>@item.When.ToString()</div>
-                <div>@item.Amount</div>
+                <div>@item.Date.ToString("dd/MM/yyyy")</div>
+                <div>@item.FormattedAmount</div>
                 <div>@item.PaymentMethod</div>
-                <div>@item.Category</div>
+                <div>
+                    @string.Join(", ", item.Categories.Select(c => c.Title))
+                </div>
                 <div class="task-actions">
                     <div class="button-group desktop-only">
-                        <a href="/expenses/details/@item.Id" class="btn btn-info" title="Detalhes">
+                        <a href="/expenses/details/@item.Id" class="btn btn-info" title="Details">
                             <i class="bi bi-eye"></i>
                         </a>
-                        <a href="/expenses/edit/@item.Id" class="btn btn-warning" title="Editar">
+                        <a href="/expenses/edit/@item.Id" class="btn btn-warning" title="Edit">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="/expenses/delete/@item.Id" class="btn btn-danger" title="Excluir">
+                        <a href="/expenses/delete/@item.Id" class="btn btn-danger" title="Delete">
                             <i class="bi bi-trash"></i>
                         </a>
                     </div>
                     <div class="dropdown mobile-only">
                         <button class="btn btn-dropdown" aria-haspopup="true" aria-expanded="false">⋮</button>
                         <div class="dropdown-menu">
-                            <a href="/expenses/details/@item.Id">Detalhes</a>
-                            <a href="/expenses/edit/@item.Id">Editar</a>
-                            <a href="/expenses/delete/@item.Id">Excluir</a>
+                            <a href="/expenses/details/@item.Id">Details</a>
+                            <a href="/expenses/edit/@item.Id">Edit</a>
+                            <a href="/expenses/delete/@item.Id">Delete</a>
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
-} *@
+}
