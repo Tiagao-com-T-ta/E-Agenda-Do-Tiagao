@@ -1,5 +1,4 @@
 ﻿@using E_Agenda.WebApp.Models
-
 @model ContactDetailsViewModel
 
 @{
@@ -7,45 +6,46 @@
     ViewBag.Titulo = "Detalhes do Contato";
 }
 
-<hr />
+<div class="page-header">
+    <h2 class="page-title">Detalhes do Contato</h2>
+</div>
+
 <div class="row justify-content-center my-5">
     <div class="col-md-8">
-
         <div class="card rounded-4 border-0">
             <div class="card-body p-md-5">
-                <h3>Detalhes</h3>
-
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Id" class="control-label fs-5">Id:</label>
-                    <input name="Id" class="form-control" value="@Model.Id" readonly disabled />
+                <div class="mb-4">
+                    <h3 class="mb-3">Informações</h3>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Id:</div>
+                        <div class="col-8">@Model.Id</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Nome:</div>
+                        <div class="col-8">@Model.Name</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Email:</div>
+                        <div class="col-8">@Model.Email</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Telefone:</div>
+                        <div class="col-8">@Model.Telephone</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Cargo:</div>
+                        <div class="col-8">@Model.Role</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Empresa:</div>
+                        <div class="col-8">@Model.Company</div>
+                    </div>
                 </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Name" class="control-label fs-5">Nome:</label>
-                    <input name="Name" class="form-control" value="@Model.Name" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Email" class="control-label fs-5">Email:</label>
-                    <input name="Email" class="form-control" value="@Model.Email" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Telephone" class="control-label fs-5">Telefone:</label>
-                    <input name="Telephone" class="form-control" value="@Model.Telephone" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Role" class="control-label fs-5">Cargo:</label>
-                    <input name="Role" class="form-control" value="@Model.Role" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Company" class="control-label fs-5">Empresa:</label>
-                    <input name="Company" class="form-control" value="@Model.Company" readonly disabled />
-                </div>
-                <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
-                    <a href="/contacts">Voltar para a listagem</a>
+                <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/contacts" class="btn btn-secondary">Voltar para a listagem</a>
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
 

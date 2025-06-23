@@ -7,56 +7,59 @@
     ViewBag.Titulo = "Detalhes do Compromisso";
 }
 
-<hr />
+<div class="page-header">
+    <h2 class="page-title">Detalhes do Compromisso</h2>
+</div>
+
 <div class="row justify-content-center my-5">
     <div class="col-md-8">
-
         <div class="card rounded-4 border-0">
             <div class="card-body p-md-5">
-                <h3>Detalhes</h3>
-
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Id" class="control-label fs-5">Id:</label>
-                    <input name="Id" class="form-control" value="@Model.Id" readonly disabled />
+                <div class="mb-4">
+                    <h3 class="mb-3">Informações</h3>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Assunto:</div>
+                        <div class="col-8">@Model.Topic</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Data:</div>
+                        <div class="col-8">@Model.Date.ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Hora de Início:</div>
+                        <div class="col-8">@Model.StartTime.ToString("hh\\:mm")</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Hora de Término:</div>
+                        <div class="col-8">@Model.EndTime.ToString("hh\\:mm")</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Tipo:</div>
+                        <div class="col-8">@Model.Type</div>
+                    </div>
+                    @if (Model.Type == "Online")
+                    {
+                        <div class="row mb-2">
+                            <div class="col-4 fw-semibold">Link:</div>
+                            <div class="col-8">@Model.Link</div>
+                        </div>
+                    }
+                    else if (Model.Type == "Presencial")
+                    {
+                        <div class="row mb-2">
+                            <div class="col-4 fw-semibold">Local:</div>
+                            <div class="col-8">@Model.Location</div>
+                        </div>
+                    }
+                    <div class="row mb-2">
+                        <div class="col-4 fw-semibold">Contato:</div>
+                        <div class="col-8">@Model.ContactName</div>
+                    </div>
                 </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Topic" class="control-label fs-5">Assunto:</label>
-                    <input name="Topic" class="form-control" value="@Model.Topic" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Date" class="control-label fs-5">Data:</label>
-                    <input name="Date" class="form-control" value="@Model.Date" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="StartTime" class="control-label fs-5">Horario de Início:</label>
-                    <input name="StartTime" class="form-control" value="@Model.StartTime" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="EndTime" class="control-label fs-5">Horario de Termino:</label>
-                    <input name="EndTime" class="form-control" value="@Model.EndTime" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Type" class="control-label fs-5">Tipo:</label>
-                    <input name="Type" class="form-control" value="@Model.Type" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Location" class="control-label fs-5">Local:</label>
-                    <input name="Location" class="form-control" value="@Model.Location" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label for="Link" class="control-label fs-5">Link:</label>
-                    <input name="Link" class="form-control" value="@Model.Link" readonly disabled />
-                </div>
-                <div class="form-group d-grid gap-2 mt-3">
-                    <label class="control-label fs-5">Contato:</label>
-                    <input class="form-control" value="@(Model.ContactName ?? "Nenhum")" readonly disabled />
-                </div>
-                <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
-                    <a href="/appointments">Voltar para a listagem</a>
+                <div class="d-flex justify-content-end gap-3 mt-4">
+                    <a href="/appointments" class="btn btn-secondary">Voltar para a listagem</a>
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>

@@ -7,37 +7,75 @@
     Layout = "_Layout";
 }
 
-<p>
-    <a class="btn btn-primary px-4" href="/appointments/register">
-        <i class="bi bi-plus"></i>
-        Cadastrar Novo
+<link rel="stylesheet" href="~/css/task-list.css" />
+
+<div class="page-header">
+    <h2 class="page-title">Lista de Compromissos</h2>
+</div>
+
+<div class="task-list-actions">
+    <a class="btn btn-primary" href="/appointments/register">
+        <i class="bi bi-plus"></i> Novo Compromisso
     </a>
-</p>
+</div>
 
-<hr />
-
-<div class="d-flex flex-wrap gap-2">
-    @foreach (var item in Model.Appointments)
-    {
-        <div class="col-12 col-md-3">
-            <div class="card border-0">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Topic</h5>
-                    <p class="card-text"><span class="fw-semibold">Data:</span> @item.Date, @item.StartTime</p>
-
-                    <span class="d-flex gap-1 justify-content-end mt-4">
-                        <a href="/appointments/details/@item.Id" class="btn btn-secondary rounded-circle opcao-card">
-                            <i class="bi bi-search"></i>
+@if (Model.Appointments == null || Model.Appointments.Count == 0)
+{
+    <div class="alert-info mt-4">Nenhum compromisso cadastrado.</div>
+}
+else
+{
+    <div class="task-table mt-4">
+        <div class="table-header">
+            <div>Assunto</div>
+            <div>Data</div>
+            <div>Inicio</div>
+            <div>Termino</div>
+            <div>Tipo</div>
+            <div>Localização</div>
+            <div>Link</div>
+            <div>Contato</div>
+        </div>
+        @foreach (var item in Model.Appointments)
+        {
+            <div class="table-row">
+                <div>@item.Topic</div>
+                <div>@item.Date.ToString()</div>
+                <div>@item.StartTime.ToString()</div>
+                <div>@item.EndTime.ToString()</div>
+                <div>@item.Type</div>
+                <div>@item.Location</div>
+                <div>
+                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                    {
+                        <a href="@item.Link" target="_blank" rel="noopener" title="Abrir link" class="text-decoration-none">
+                            <i class="bi bi-link-45deg"></i> <span class="d-none d-md-inline">Acessar</span>
                         </a>
-                        <a href="/appointments/edit/@item.Id" class="btn btn-primary rounded-circle opcao-card">
-                            <i class="bi bi-pencil-square"></i>
+                    }
+                </div>
+                <div>@item.ContactName</div>
+                <div class="task-actions">
+                    <div class="button-group desktop-only">
+                        <a href="/appointments/details/@item.Id" class="btn btn-info" title="Detalhes">
+                            <i class="bi bi-eye"></i>
                         </a>
-                        <a href="/appointments/delete/@item.Id" class="btn btn-danger rounded-circle opcao-card">
+                        <a href="/appointments/edit/@item.Id" class="btn btn-warning" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="/appointments/delete/@item.Id" class="btn btn-danger" title="Excluir">
                             <i class="bi bi-trash"></i>
                         </a>
-                    </span>
+                    </div>
+                    <div class="dropdown mobile-only">
+                        <button class="btn btn-dropdown" aria-haspopup="true" aria-expanded="false">⋮</button>
+                        <div class="dropdown-menu">
+                            <a href="/appointments/details/@item.Id">Detalhes</a>
+                            <a href="/appointments/edit/@item.Id">Editar</a>
+                            <a href="/appointments/delete/@item.Id">Excluir</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
