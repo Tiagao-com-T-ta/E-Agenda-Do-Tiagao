@@ -46,11 +46,15 @@ else
                 <div>@item.Type</div>
                 <div>@item.Location</div>
                 <div>
-                    @if (!string.IsNullOrWhiteSpace(item.Link))
+                    @if (!string.IsNullOrWhiteSpace(item.Link) && item.Link != "-/-")
                     {
                         <a href="@item.Link" target="_blank" rel="noopener" title="Abrir link" class="text-decoration-none">
                             <i class="bi bi-link-45deg"></i> <span class="d-none d-md-inline">Acessar</span>
                         </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
                     }
                 </div>
                 <div>@item.ContactName</div>
