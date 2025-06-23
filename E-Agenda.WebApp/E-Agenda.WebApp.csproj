@@ -12,4 +12,8 @@
     <ProjectReference Include="..\E-Agenda.Structure\E-Agenda.Structure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Expense\" />
+  </ItemGroup>
+
 </Project>

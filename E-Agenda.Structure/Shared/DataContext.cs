@@ -1,4 +1,6 @@
-﻿using System;
+﻿using E_Agenda.Domain.CategoriesModule;
+using E_Agenda.Domain.ExpensesModule;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +15,17 @@ namespace E_Agenda.Structure.Shared
         private string folder = "C:\\temp";
         private string file = "E-Agenda-Data.json";
 
+        public List<Category> Categories { get; internal set; }
+        public List<Expense> Expenses { get; internal set; }
+
 
         // as listas vão aqui.
         public List<TasksClass> TasksClass { get; set;  }
         public DataContext()
         {
+            Categories = new List<Category>();
+
+            Expenses = new List<Expense>();
             TasksClass = new List<TasksClass>();
         }
 
@@ -65,6 +73,10 @@ namespace E_Agenda.Structure.Shared
             DataContext? dataContext = JsonSerializer.Deserialize<DataContext>(json, jsonOptions)!;
             
             if (dataContext == null) return;
+
+            Categories = dataContext.Categories;
+
+            Expenses = dataContext.Expenses;
 
             // Carregar as listas aqui.
             TasksClass = dataContext.TasksClass;
