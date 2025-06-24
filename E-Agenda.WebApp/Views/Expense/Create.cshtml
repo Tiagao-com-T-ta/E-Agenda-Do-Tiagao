@@ -1,0 +1,62 @@
+﻿@using E_Agenda.WebApp.Models
+@model RegisterExpenseViewModel
+
+@{
+    ViewData["Title"] = "Add Expense";
+}
+
+<h1 class="text-2xl font-bold mb-4">Add New Expense</h1>
+
+<form asp-action="Create" method="post" class="space-y-4">
+
+    <!-- Description -->
+    <div>
+        <label asp-for="Description" class="block font-medium">Description</label>
+        <input asp-for="Description" class="w-full border border-gray-300 p-2 rounded" />
+        <span asp-validation-for="Description" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Date -->
+    <div>
+        <label asp-for="OccurrenceDate" class="block font-medium">Occurrence Date</label>
+        <input asp-for="OccurrenceDate" type="date" class="w-full border border-gray-300 p-2 rounded" />
+        <span asp-validation-for="OccurrenceDate" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Value -->
+    <div>
+        <label asp-for="Value" class="block font-medium">Value</label>
+        <input asp-for="Value" type="number" step="0.01" class="w-full border border-gray-300 p-2 rounded" />
+        <span asp-validation-for="Value" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Payment Method -->
+    <div>
+        <label asp-for="PaymentMethod" class="block font-medium">Payment Method</label>
+        <select asp-for="PaymentMethod" class="w-full border border-gray-300 p-2 rounded">
+            @foreach (var option in Enum.GetValues(typeof(E_Agenda.Domain.ExpenseModule.PaymentMethod)))
+            {
+                <option value="@option">@option</option>
+            }
+        </select>
+        <span asp-validation-for="PaymentMethod" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Categories -->
+    <div>
+        <label asp-for="SelectedCategories" class="block font-medium">Categories</label>
+        <select asp-for="SelectedCategories" asp-items="Model.AvailableCategories" multiple size="5" class="w-full border border-gray-300 p-2 rounded"></select>
+        <span asp-validation-for="SelectedCategories" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex space-x-2">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">Save</button>
+        <a asp-action="Index" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-300">Cancel</a>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

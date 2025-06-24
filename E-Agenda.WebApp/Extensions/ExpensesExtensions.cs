@@ -1,36 +1,29 @@
 ﻿using E_Agenda.Domain.ExpenseModule;
 using E_Agenda.WebApp.Models;
 
-namespace E_Agenda.WebApp.Extensions
+namespace E_Agenda.WebApp.Extensions;
+
+public static class ExpenseExtensions
 {
-    public static class ExpenseExtensions
+    public static Expense ToEntity(this ExpenseFormViewModel formVM)
     {
-        public static Expense ToEntity(this ExpenseViewModel expenseVM)
-        {
-            return new Expense(
-                expenseVM.Description,
-                expenseVM.Date,
-                expenseVM.Amount,
-                expenseVM.PaymentMethod,
-                expenseVM.SelectedCategories);
-        }
+        return new Expense(
+            formVM.Description,
+            formVM.Value,
+            formVM.OccurrenceDate,
+            formVM.PaymentMethod
+        );
+    }
 
-        public static ExpenseDetailsViewModel ToDetailsViewModel(this Expense expense)
-        {
-            return new ExpenseDetailsViewModel(expense);
-        }
-
-        public static EditExpenseViewModel ToEditViewModel(this Expense expense)
-        {
-            return new EditExpenseViewModel
-            {
-                Id = expense.Id,
-                Description = expense.Description,
-                Date = expense.Date,
-                Amount = expense.Amount,
-                PaymentMethod = expense.PaymentMethod,
-                SelectedCategories = expense.Category
-            };
-        }
+    public static ExpenseDetailsViewModel ToDetailsVM(this Expense expense)
+    {
+        return new ExpenseDetailsViewModel(
+            expense.Id,
+            expense.Description,
+            expense.Value,
+            expense.OccurrenceDate,
+            expense.PaymentMethod,
+            expense.Categories
+        );
     }
 }

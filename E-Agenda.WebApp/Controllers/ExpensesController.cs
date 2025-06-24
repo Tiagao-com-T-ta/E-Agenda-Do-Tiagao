@@ -1,28 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using E_Agenda.Domain.CategoriesModule;
 using E_Agenda.Domain.ExpenseModule;
-using E_Agenda.Domain.CategoryModule;
-using E_Agenda.WebApp.Models;
-using E_Agenda.WebApp.Extensions;
-using System;
-using System.Linq;
-using E_Agenda.Domain.CategoriesModule;
-using E_Agenda.Domain.ExpensesModule;
+using E_Agenda.Structure.Shared;
 using E_Agenda.Structure.CategoriesModule;
 using E_Agenda.Structure.ExpensesModule;
-using E_Agenda.Structure.Shared;
+using E_Agenda.WebApp.Extensions;
+using E_Agenda.WebApp.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using E_Agenda.Domain.ExpensesModule;
 
 namespace E_Agenda.WebApp.Controllers
 {
     [Route("expenses")]
-    public class ExpensesController : Controller
+    public class ExpenseController : Controller
     {
+        private readonly DataContext context;
         private readonly IExpensesRepository expensesRepository;
         private readonly ICategoryRepository categoriesRepository;
 
-        public ExpensesController()
+        public ExpenseController()
         {
-            var context = new DataContext(true);
+            context = new DataContext(true);
             expensesRepository = new ExpensesRepositoryFile(context);
             categoriesRepository = new CategoryRepositoryFile(context);
         }
@@ -30,46 +28,52 @@ namespace E_Agenda.WebApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var expenses = expensesRepository.GetAllRegisters();
-            var viewModel = new ExpenseListViewModel(expenses);
+            var records = expensesRepository.GetAllRegisters();
+            var viewModel = new VisualizeExpensesViewModel(records);
+
             return View(viewModel);
         }
 
         [HttpGet("create")]
         public IActionResult Create()
         {
-            var viewModel = new RegisterExpenseViewModel
-            {
-                SelectedCategories = new System.Collections.Generic.List<Category>()
-            };
+            var availableCategories = categoriesRepository.GetAllRegisters();
 
-            ViewBag.Categories = categoriesRepository.GetAllRegisters()
-                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Title })
-                .ToList();
+            var viewModel = new RegisterExpenseViewModel(availableCategories);
 
-            return View("Create", viewModel);
+            return View(viewModel);
         }
 
         [HttpPost("create")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(RegisterExpenseViewModel viewModel)
         {
+            var availableCategories = categoriesRepository.GetAllRegisters();
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = categoriesRepository.GetAllRegisters()
-                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Title })
-                    .ToList();
+                foreach (var category in availableCategories)
+                {
+                    var selectItem = new SelectListItem(category.Title, category.Id.ToString());
+                    viewModel.AvailableCategories?.Add(selectItem);
+                }
+
                 return View(viewModel);
             }
-            var selectedCategoryIds = viewModel.SelectedCategories.Select(c => c.Id).ToList();
-            var categories = categoriesRepository.GetAllRegisters()
-                .Where(c => selectedCategoryIds.Contains(c.Id))
-                .ToList();
 
-            var newExpense = viewModel.ToEntity();
-            newExpense.Category = categories;
+            var expense = viewModel.ToEntity();
 
-            expensesRepository.Register(newExpense);
+            if (viewModel.SelectedCategories is not null)
+            {
+                foreach (var selectedId in viewModel.SelectedCategories)
+                {
+                    var category = availableCategories.FirstOrDefault(c => c.Id == selectedId);
+                    if (category is not null)
+                        expense.RegisterCategory(category);
+                }
+            }
+
+            expensesRepository.Register(expense);
 
             return RedirectToAction(nameof(Index));
         }
@@ -77,15 +81,19 @@ namespace E_Agenda.WebApp.Controllers
         [HttpGet("edit/{id:guid}")]
         public IActionResult Edit(Guid id)
         {
-            var expense = expensesRepository.GetRegisterById(id);
-            if (expense == null)
-                return NotFound();
+            var availableCategories = categoriesRepository.GetAllRegisters();
 
-            var viewModel = expense.ToEditViewModel();
+            var selectedExpense = expensesRepository.GetRegisterById(id);
 
-            ViewBag.Categories = categoriesRepository.GetAllRegisters()
-                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Title })
-                .ToList();
+            var viewModel = new EditExpenseViewModel(
+                id,
+                selectedExpense.Description,
+                selectedExpense.Value,
+                selectedExpense.OccurrenceDate,
+                selectedExpense.PaymentMethod,
+                selectedExpense.Categories,
+                availableCategories
+            );
 
             return View(viewModel);
         }
@@ -94,51 +102,48 @@ namespace E_Agenda.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, EditExpenseViewModel viewModel)
         {
+            var availableCategories = categoriesRepository.GetAllRegisters();
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = categoriesRepository.GetAllRegisters()
-                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Title })
-                    .ToList();
+                foreach (var category in availableCategories)
+                {
+                    var selectItem = new SelectListItem(category.Title, category.Id.ToString());
+                    viewModel.AvailableCategories?.Add(selectItem);
+                }
+
                 return View(viewModel);
             }
 
-            var existingExpense = expensesRepository.GetRegisterById(id);
-            if (existingExpense == null)
-                return NotFound();
+            var editedExpense = viewModel.ToEntity();
 
-            var selectedCategoryIds = viewModel.SelectedCategories.Select(c => c.Id).ToList();
-            var categories = categoriesRepository.GetAllRegisters()
-                .Where(c => selectedCategoryIds.Contains(c.Id))
-                .ToList();
+            var selectedExpense = expensesRepository.GetRegisterById(id);
 
-            var updatedExpense = viewModel.ToEntity();
-            updatedExpense.Category = categories;
+            foreach (var category in selectedExpense.Categories.ToList())
+                selectedExpense.RemoveCategory(category);
 
-            existingExpense.Update(updatedExpense);
-            expensesRepository.Edit(id, existingExpense);
+            if (viewModel.SelectedCategories is not null)
+            {
+                foreach (var selectedId in viewModel.SelectedCategories)
+                {
+                    var category = availableCategories.FirstOrDefault(c => c.Id == selectedId);
+                    if (category is not null)
+                        selectedExpense.RegisterCategory(category);
+                }
+            }
+
+            expensesRepository.Edit(id, editedExpense);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet("details/{id:guid}")]
-        public IActionResult Details(Guid id)
-        {
-            var expense = expensesRepository.GetRegisterById(id);
-            if (expense == null)
-                return NotFound();
-
-            var viewModel = expense.ToDetailsViewModel();
-            return View(viewModel);
         }
 
         [HttpGet("delete/{id:guid}")]
         public IActionResult Delete(Guid id)
         {
-            var expense = expensesRepository.GetRegisterById(id);
-            if (expense == null)
-                return NotFound();
+            var selectedExpense = expensesRepository.GetRegisterById(id);
 
-            var viewModel = expense.ToDetailsViewModel();
+            var viewModel = new DeleteExpenseViewModel(selectedExpense.Id, selectedExpense.Description);
+
             return View(viewModel);
         }
 
@@ -146,12 +151,26 @@ namespace E_Agenda.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            var expense = expensesRepository.GetRegisterById(id);
-            if (expense == null)
-                return NotFound();
-
             expensesRepository.Delete(id);
+
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("details/{id:guid}")]
+        public IActionResult Details(Guid id)
+        {
+            var selectedExpense = expensesRepository.GetRegisterById(id);
+
+            var viewModel = new ExpenseDetailsViewModel(
+                id,
+                selectedExpense.Description,
+                selectedExpense.Value,
+                selectedExpense.OccurrenceDate,
+                selectedExpense.PaymentMethod,
+                selectedExpense.Categories
+            );
+
+            return View(viewModel);
         }
     }
 }

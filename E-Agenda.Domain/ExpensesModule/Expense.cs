@@ -1,42 +1,57 @@
-﻿using E_Agenda.Domain.CategoriesModule;
-using E_Agenda.Domain.CategoryModule;
-using E_Agenda.Domain.Shared;
+﻿using E_Agenda.Domain.Shared;
+using E_Agenda.Domain.CategoriesModule;
 using System;
 using System.Collections.Generic;
+using E_Agenda.Domain.CategoryModule;
 
 namespace E_Agenda.Domain.ExpenseModule
 {
     public class Expense : BaseEntity<Expense>
     {
         public string Description { get; set; }
-        public DateTime Date { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Value { get; set; }
+        public DateTime OccurrenceDate { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-        public List<Category> Category { get; set; }
+        public List<Category> Categories { get; set; }
 
         public Expense()
         {
-            Category = new List<Category>();
+            Categories = new List<Category>();
         }
 
-        public Expense(string description, DateTime date, decimal amount,
-                      PaymentMethod paymentMethod, List<Category> categories) : this()
+        public Expense(string description, decimal value, DateTime occurrenceDate, PaymentMethod paymentMethod) : this()
         {
             Id = Guid.NewGuid();
             Description = description;
-            Date = date;
-            Amount = amount;
+            Value = value;
+            OccurrenceDate = occurrenceDate;
             PaymentMethod = paymentMethod;
-            Category = categories ?? new List<Category>();
+        }
+
+        public void RegisterCategory(Category category)
+        {
+            if (Categories.Contains(category))
+                return;
+
+            category.Expenses.Add(this);
+            Categories.Add(category);
+        }
+
+        public void RemoveCategory(Category category)
+        {
+            if (!Categories.Contains(category))
+                return;
+
+            category.Expenses.Remove(this);
+            Categories.Remove(category);
         }
 
         public override void Update(Expense editedExpense)
         {
             Description = editedExpense.Description;
-            Date = editedExpense.Date;
-            Amount = editedExpense.Amount;
+            Value = editedExpense.Value;
+            OccurrenceDate = editedExpense.OccurrenceDate;
             PaymentMethod = editedExpense.PaymentMethod;
-            Category = editedExpense.Category;
         }
     }
 }

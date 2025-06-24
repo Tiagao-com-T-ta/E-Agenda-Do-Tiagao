@@ -1,5 +1,5 @@
 ﻿using E_Agenda.Domain.CategoriesModule;
-using E_Agenda.Domain.CategoryModule;
+using E_Agenda.Structure.CategoriesModule;
 using E_Agenda.Structure.Shared;
 using E_Agenda.WebApp.Extensions;
 using E_Agenda.WebApp.Models;
@@ -10,40 +10,54 @@ namespace E_Agenda.WebApp.Controllers
     [Route("categories")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository categoryRepository;
         private readonly DataContext dataContext;
+        private readonly ICategoryRepository categoryRepository;
 
-        public CategoryController(
-            ICategoryRepository categoryRepository,
-            DataContext dataContext)
+        public CategoryController()
         {
-            this.categoryRepository = categoryRepository;
-            this.dataContext = dataContext;
+            dataContext = new DataContext(true);
+            categoryRepository = new CategoryRepositoryFile(dataContext);  
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var categories = categoryRepository.GetAllRegisters();
-            var viewModel = new CategoryListViewModel(categories);
+            var records = categoryRepository.GetAllRegisters();
+
+            var viewModel = new ViewCategoriesViewModel(records);
+
             return View(viewModel);
         }
 
         [HttpGet("register")]
         public IActionResult Register()
         {
-            return View(new RegisterCategoryViewModel());
+            var registerVM = new RegisterCategoryViewModel();
+
+            return View(registerVM);
         }
 
         [HttpPost("register")]
         [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterCategoryViewModel registerVM)
         {
+            var records = categoryRepository.GetAllRegisters();
+
+            foreach (var item in records)
+            {
+                if (item.Title.Equals(registerVM.Title, StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError("UniqueRegistration", "A category with this title is already registered.");
+                    break;
+                }
+            }
+
             if (!ModelState.IsValid)
                 return View(registerVM);
 
-            var newCategory = registerVM.ToEntity();
-            categoryRepository.Register(newCategory);
+            var entity = registerVM.ToEntity();
+
+            categoryRepository.Register(entity);
 
             return RedirectToAction(nameof(Index));
         }
@@ -51,53 +65,52 @@ namespace E_Agenda.WebApp.Controllers
         [HttpGet("edit/{id:guid}")]
         public IActionResult Edit(Guid id)
         {
-            var category = categoryRepository.GetRegisterById(id);
+            var selectedRecord = categoryRepository.GetRegisterById(id);
 
-            if (category == null)
+            if (selectedRecord == null)
                 return NotFound();
 
-            return View(category.ToEditViewModel());
+            var editVM = new EditCategoryViewModel(id, selectedRecord.Title);
+
+            return View(editVM);
         }
 
         [HttpPost("edit/{id:guid}")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, EditCategoryViewModel editVM)
         {
+            var records = categoryRepository.GetAllRegisters();
+
+            foreach (var item in records)
+            {
+                if (!item.Id.Equals(id) && item.Title.Equals(editVM.Title, StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError("UniqueRegistration", "A category with this title is already registered.");
+                    break;
+                }
+            }
+
             if (!ModelState.IsValid)
                 return View(editVM);
 
-            var existingCategory = categoryRepository.GetRegisterById(id);
-            if (existingCategory == null)
-                return NotFound();
+            var editedEntity = editVM.ToEntity();
 
-            var updatedCategory = editVM.ToEntity();
-            existingCategory.Update(updatedCategory);
-
-            categoryRepository.Edit(id, existingCategory);
+            categoryRepository.Edit(id, editedEntity);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet("details/{id:guid}")]
-        public IActionResult Details(Guid id)
-        {
-            var category = categoryRepository.GetRegisterById(id);
-
-            if (category == null)
-                return NotFound();
-
-            return View(category.ToDetailsViewModel());
         }
 
         [HttpGet("delete/{id:guid}")]
         public IActionResult Delete(Guid id)
         {
-            var category = categoryRepository.GetRegisterById(id);
+            var selectedRecord = categoryRepository.GetRegisterById(id);
 
-            if (category == null)
+            if (selectedRecord == null)
                 return NotFound();
 
-            return View(category.ToDetailsViewModel());
+            var deleteVM = new DeleteCategoryViewModel(selectedRecord.Id, selectedRecord.Title);
+
+            return View(deleteVM);
         }
 
         [HttpPost("delete/{id:guid}")]
@@ -111,13 +124,27 @@ namespace E_Agenda.WebApp.Controllers
 
             if (category.Expenses.Count > 0)
             {
-                var viewModel = category.ToDetailsViewModel();
+                var viewModel = category.ToDetailsVM();
                 ViewBag.Error = "Category cannot be deleted because it has associated expenses.";
                 return View("Delete", viewModel);
             }
 
             categoryRepository.Delete(id);
+
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("details/{id:guid}")]
+        public IActionResult Details(Guid id)
+        {
+            var selectedRecord = categoryRepository.GetRegisterById(id);
+
+            if (selectedRecord == null)
+                return NotFound();
+
+            var detailsVM = new CategoryDetailsViewModel(selectedRecord.Id, selectedRecord.Title, selectedRecord.Expenses);
+
+            return View(detailsVM);
         }
     }
 }
