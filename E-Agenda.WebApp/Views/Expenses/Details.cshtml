@@ -1,6 +1,6 @@
 ﻿@using E_Agenda.WebApp.Models
 
-@model ExpensesDetailsViewModel
+@model ExpenseDetailsViewModel
 
 <div class="page-header">
     <h2 class="page-title">Detalhes do Contato</h2>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-4 fw-semibold">Data:</div>
-                        <div class="col-8">@Model.When.ToString()</div>
+                        <div class="col-8">@Model.Date.ToString()</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-4 fw-semibold">Valor:</div>
