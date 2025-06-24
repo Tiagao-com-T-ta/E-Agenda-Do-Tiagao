@@ -1,4 +1,5 @@
-﻿@using E_Agenda.WebApp.Models
+﻿@using E_Agenda.Domain.ExpenseModule
+@using E_Agenda.WebApp.Models
 @model EditExpenseViewModel
 
 @{
@@ -9,42 +10,63 @@
 <hr />
 <div class="row justify-content-center my-5">
     <div class="col-md-8">
-        <div class="card rounded-4 border-0">
+        <div class="card rounded-4 border-0 shadow-sm">
             <div class="card-body p-md-5">
-                <form asp-action="Register">
-                    <h3>Formulário de Edição</h3>
+                <form asp-action="Edit"
+                      asp-controller="Expenses"
+                      asp-route-id="@Model.Id"
+                      method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <h3 class="mb-4">Formulário de Edição</h3>
 
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="Description" class="control-label fs-5">Descrição:</label>
-                        <input asp-for="Description" class="form-control" value="@Model.Description" />
+                        <input asp-for="Description" class="form-control" placeholder="Descrição da despesa" />
                         <span asp-validation-for="Description" class="text-danger"></span>
-
                     </div>
+
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="OccurrenceDate" class="control-label fs-5">Data:</label>
-                        <input asp-for="OccurrenceDate" class="form-control" value="@Model.OccurrenceDate" />
+                        <input asp-for="OccurrenceDate" class="form-control" type="date" />
                         <span asp-validation-for="OccurrenceDate" class="text-danger"></span>
-
                     </div>
+
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="Value" class="control-label fs-5">Valor:</label>
-                        <input asp-for="Value" class="form-control" value="@Model.Value" />
+                        <input asp-for="Value" class="form-control" placeholder="0.00" />
                         <span asp-validation-for="Value" class="text-danger"></span>
-
                     </div>
+
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="PaymentMethod" class="control-label fs-5">Tipo de Pagamento:</label>
-                        <input asp-for="PaymentMethod" class="form-control" value="@Model.PaymentMethod" />
-
+                        <select asp-for="PaymentMethod" class="form-select" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+                        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
                     </div>
+
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="SelectedCategories" class="control-label fs-5">Categoria:</label>
-                        <input asp-for="SelectedCategories" class="form-control" value="@Model.SelectedCategories" />
-
+                        <label class="control-label fs-5">Categorias:</label>
+                        <div class="d-flex flex-wrap gap-3 mt-1">
+                            @foreach (var category in Model.AvailableCategories)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="category_@category.Value"
+                                           name="SelectedCategories"
+                                           value="@category.Value"
+                                    @(Model.SelectedCategories.Contains(Guid.Parse(category.Value)) ? "checked" : "") />
+                                    <label class="form-check-label" for="category_@category.Value">
+                                        @category.Text
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="SelectedCategories" class="text-danger"></span>
                     </div>
+
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
-                        <a href="/expenses">Voltar para a listagem</a>
-                        <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
+                        <a href="/expenses" class="btn btn-link text-secondary">Voltar para a listagem</a>
+                        <button type="submit" class="btn btn-primary px-4">Salvar Alterações</button>
                     </div>
                 </form>
             </div>
