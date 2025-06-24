@@ -26,7 +26,6 @@
                 <td>@category.Expenses.Count</td>
                 <td>@category.TotalExpenses.ToString("C")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@category.Id" class="btn btn-info btn-sm">Details</a>
                     <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-warning btn-sm">Edit</a>
                     <a asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger btn-sm">Delete</a>
                 </td>
