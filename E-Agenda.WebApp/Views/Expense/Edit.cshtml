@@ -1,5 +1,5 @@
-﻿@* @using E_Agenda.WebApp.Models
-@model EditExpensesViewModels
+﻿@using E_Agenda.WebApp.Models
+@model EditExpenseViewModel
 
 @{
     Layout = "_Layout";
@@ -21,15 +21,15 @@
 
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="When" class="control-label fs-5">Data:</label>
-                        <input asp-for="When" class="form-control" value="@Model.When" />
-                        <span asp-validation-for="When" class="text-danger"></span>
+                        <label asp-for="OccurrenceDate" class="control-label fs-5">Data:</label>
+                        <input asp-for="OccurrenceDate" class="form-control" value="@Model.OccurrenceDate" />
+                        <span asp-validation-for="OccurrenceDate" class="text-danger"></span>
 
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="Amount" class="control-label fs-5">Valor:</label>
-                        <input asp-for="Amount" class="form-control" value="@Model.Amount" />
-                        <span asp-validation-for="Amount" class="text-danger"></span>
+                        <label asp-for="Value" class="control-label fs-5">Valor:</label>
+                        <input asp-for="Value" class="form-control" value="@Model.Value" />
+                        <span asp-validation-for="Value" class="text-danger"></span>
 
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
@@ -38,8 +38,8 @@
 
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="Category" class="control-label fs-5">Categoria:</label>
-                        <input asp-for="Category" class="form-control" value="@Model.Category" />
+                        <label asp-for="SelectedCategories" class="control-label fs-5">Categoria:</label>
+                        <input asp-for="SelectedCategories" class="form-control" value="@Model.SelectedCategories" />
 
                     </div>
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
@@ -55,4 +55,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
- *@

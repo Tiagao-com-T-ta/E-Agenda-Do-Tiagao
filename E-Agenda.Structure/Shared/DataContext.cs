@@ -19,8 +19,8 @@ namespace E_Agenda.Structure.Shared
         private string folder = "C:\\temp";
         private string file = "E-Agenda-Data.json";
 
-        public List<Category> Categories { get; internal set; }
-        public List<Expense> Expenses { get; internal set; }
+        public List<Category> Categories { get; set; }
+        public List<Expense> Expenses { get; set; }
         public List<TasksClass> TasksClass { get; set;  }
         public List<Contact> Contacts { get; set; }
         public List<Appointment> Appointments { get; set; }

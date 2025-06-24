@@ -2,62 +2,83 @@
 @model VisualizeExpensesViewModel
 
 @{
-    ViewData["Title"] = "Expenses List";
+    ViewBag.Title = "Lista de Despesas";
+    Layout = "_Layout";
 }
 
-<h1 class="text-2xl font-bold mb-4">Expenses</h1>
+<link rel="stylesheet" href="~/css/task-list.css" />
 
-<a asp-action="Create" class="btn btn-primary mb-4">+ Add New Expense</a>
+<div class="page-header">
+    <h2 class="page-title">Lista de Compromissos</h2>
+</div>
 
-<table class="table table-striped table-hover w-full border-collapse border border-gray-300">
-    <thead class="bg-gray-100">
-        <tr>
-            <th>Description</th>
-            <th>Occurrence Date</th>
-            <th>Value</th>
-            <th>Payment Method</th>
-            <th>Categories</th>
-            <th class="text-center">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Records != null && Model.Records.Any())
+<div class="task-list-actions">
+    <a class="btn btn-primary" href="/appointments/register">
+        <i class="bi bi-plus"></i> Novo Compromisso
+    </a>
+</div>
+
+@if (Model.Records == null || Model.Records.Count == 0)
+{
+    <div class="alert-info mt-4">Nenhum compromisso cadastrado.</div>
+}
+else
+{
+    <div class="task-table mt-4">
+        <div class="table-header">
+            <div>Assunto</div>
+            <div>Data</div>
+            <div>Inicio</div>
+            <div>Termino</div>
+            <div>Tipo</div>
+            <div>Localização</div>
+            <div>Link</div>
+            <div>Contato</div>
+        </div>
+        @foreach (var item in Model.Records)
         {
-            foreach (var expense in Model.Records)
-            {
-                <tr>
-                    <td>@expense.Description</td>
-                    <td>@expense.OccurrenceDate.ToString("dd/MM/yyyy")</td>
-                    <td>@expense.Value.ToString("C")</td>
-                    <td>@expense.PaymentMethod</td>
-                    <td>
-                        @if (expense.Categories != null && expense.Categories.Count > 0)
-                        {
-                            <ul class="list-disc list-inside">
-                                @foreach (var category in expense.Categories)
-                                {
-                                    <li>@category</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <span class="text-gray-500">No categories</span>
-                        }
-                    </td>
-                    <td class="text-center space-x-2">
-                        <a asp-action="Edit" asp-route-id="@expense.Id" class="text-blue-600">Edit</a>
-                        <a asp-action="Details" asp-route-id="@expense.Id" class="text-green-600">Details</a>
-                        <a asp-action="Delete" asp-route-id="@expense.Id" class="text-red-600">Delete</a>
-                    </td>
-                </tr>
-            }
+            <div class="table-row">
+                <div>@item.Topic</div>
+                <div>@item.Date.ToString()</div>
+                <div>@item.StartTime.ToString()</div>
+                <div>@item.EndTime.ToString()</div>
+                <div>@item.Type</div>
+                <div>@item.Location</div>
+                <div>
+                    @if (!string.IsNullOrWhiteSpace(item.Link) && item.Link != "-/-")
+                    {
+                        <a href="@item.Link" target="_blank" rel="noopener" title="Abrir link" class="text-decoration-none">
+                            <i class="bi bi-link-45deg"></i> <span class="d-none d-md-inline">Acessar</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </div>
+                <div>@item.ContactName</div>
+                <div class="task-actions">
+                    <div class="button-group desktop-only">
+                        <a href="/appointments/details/@item.Id" class="btn btn-info" title="Detalhes">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="/appointments/edit/@item.Id" class="btn btn-warning" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="/appointments/delete/@item.Id" class="btn btn-danger" title="Excluir">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                    <div class="dropdown mobile-only">
+                        <button class="btn btn-dropdown" aria-haspopup="true" aria-expanded="false">⋮</button>
+                        <div class="dropdown-menu">
+                            <a href="/appointments/details/@item.Id">Detalhes</a>
+                            <a href="/appointments/edit/@item.Id">Editar</a>
+                            <a href="/appointments/delete/@item.Id">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-        else
-        {
-            <tr>
-                <td colspan="6" class="text-center text-gray-500 p-4">No expenses registered.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    </div>
+}
